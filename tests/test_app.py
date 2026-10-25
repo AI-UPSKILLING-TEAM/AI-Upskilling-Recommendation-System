@@ -65,7 +65,10 @@ class ProjectTests(unittest.TestCase):
         self.assertEqual(result["analysis"]["readiness_percent"], 40)
         self.assertEqual(result["analysis"]["missing_skills"], ["Excel", "Statistics", "Data Visualization"])
         self.assertEqual(self.call("/api/progress", {"skill": "Excel", "completed": True})[0], 200)
-        self.assertIn("Excel", self.call("/api/dashboard")[1]["completed"])
+        updated = self.call("/api/dashboard")[1]
+        self.assertIn("Excel", updated["completed"])
+        self.assertEqual(updated["analysis"]["practice_progress_percent"], 20)
+        self.assertEqual(updated["analysis"]["recommendations"][-1]["skill"], "Excel")
         self.assertEqual(self.call("/api/logout", {})[0], 200)
         self.assertEqual(self.call("/api/dashboard")[0], 401)
 
