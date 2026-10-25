@@ -12,7 +12,7 @@
 | FR-11–FR-13 | Career role list/selection/storage | Career catalog, SQLite, profile | Implemented |
 | FR-14–FR-17 | Existing/required/missing or weak skills and gap display | Gap report/dashboard | Partial: checks missing skill names; does not assess weak proficiency levels |
 | FR-18–FR-20 | Analyze gaps, personalized recommendations and courses/resources | `recommendations.py`, curated links | Partial: TF-IDF content ranking, **not evaluated trained AI** |
-| FR-21–FR-22 | Suitable project and certification recommendations | Generic project activity; portfolio tracking | Partial: no curated project/certification recommender |
+| FR-21–FR-22 | Suitable project and certification recommendations | Concrete project prompts for each catalog skill and optional official certification options for Data Analyst, Cloud Engineer and Cybersecurity Analyst | Partial: limited catalog, not personalized certification eligibility |
 | FR-23–FR-25 | Display/categorize/view learning resources | `/api/resources`, per-skill UI links | Implemented for a small educational catalog; no complete link audit |
 | FR-26–FR-28 | Mark, calculate and display learning progress | Practice flags; progress percentage; UI/tests | Implemented for practice milestones, not skill mastery |
 | FR-29 | Update recommendations after progress | Unpracticed resource cards appear first | Basic reprioritization; no personalized feedback-trained ranking |
@@ -31,7 +31,7 @@
 
 ## Source-specific observations
 - SRS section 7 names Student, Skill, Career Role, Course, Project, Certification, Learning Resource, Recommendation, and Progress as entities. The current schema uses some simplified relations; it is **not** a one-to-one implementation of every SRS entity.
-- The SRS calls for recommendation of courses, projects and certifications. A generic practice activity and portfolio entry do not fully satisfy the project/certification recommendation requirements.
+- The SRS requires course, project and applicable certification suggestions. This prototype now includes concrete per-skill projects and a limited official certification lookup. Broader project/certification coverage, prerequisites and relevance should be reviewed by the team.
 - Weak-skill scoring requires actual proficiency measurements that the current demo has not collected.
 
 ## Before signing off
