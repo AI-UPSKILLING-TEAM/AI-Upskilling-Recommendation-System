@@ -191,7 +191,7 @@ class API(BaseHTTPRequestHandler):
             if not uid:
                 return self.send_json(401, {"error": "Sign in first"})
             if route == "/api/dashboard":
-                user = db.execute("SELECT id, name, email, interests, goal FROM users WHERE id=?", (uid,)).fetchone()
+                user = db.execute("SELECT id, name, email, interests, goal, role FROM users WHERE id=?", (uid,)).fetchone()
                 skills = [r["skill"] for r in db.execute("SELECT skill FROM skills WHERE user_id=? ORDER BY skill", (uid,))]
                 completed = [r["skill"] for r in db.execute("SELECT skill FROM progress WHERE user_id=? ORDER BY skill", (uid,))]
                 analysis = gap_report(user["goal"], skills, user["interests"])
