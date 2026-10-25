@@ -12,7 +12,8 @@ import secrets
 import sqlite3
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlsplit
+from recommendations import rank_learning, resource_catalog
 
 ROOT = Path(__file__).resolve().parent
 DB_PATH = Path(os.getenv("UPSKILL_DB", str(ROOT / "upskill.db")))
@@ -64,13 +65,43 @@ def initialize(db_path=None):
                 expires_at INTEGER NOT NULL
             );
         """)
+        fields = {row["name"] for row in db.execute("PRAGMA table_info(users)")}
+        if "role" not in fields:
+            db.execute("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'student'")
+        db.executescript("""
+            CREATE TABLE IF NOT EXISTS notification_preferences (
+                user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+                enabled INTEGER NOT NULL DEFAULT 0 CHECK(enabled IN (0,1))
+            );
+            CREATE TABLE IF NOT EXISTS notifications (
+                id INTEGER PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                title TEXT NOT NULL,
+                created_at INTEGER NOT NULL,
+                read_at INTEGER
+            );
+            CREATE TABLE IF NOT EXISTS learning_resources (
+                id INTEGER PRIMARY KEY,
+                skill TEXT NOT NULL,
+                title TEXT NOT NULL,
+                url TEXT NOT NULL,
+                description TEXT NOT NULL DEFAULT ''
+            );
+            CREATE TABLE IF NOT EXISTS audit_log (
+                id INTEGER PRIMARY KEY,
+                actor_id INTEGER NOT NULL REFERENCES users(id),
+                action TEXT NOT NULL,
+                target TEXT NOT NULL,
+                created_at INTEGER NOT NULL
+            );
+        """)
 
 
 def password_digest(password, salt):
     return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), bytes.fromhex(salt), 300_000).hex()
 
 
-def gap_report(goal, existing):
+def gap_report(goal, existing, interests=''):
     required = CAREER_PATHS.get(goal, [])
     present = set(existing)
     missing = [skill for skill in required if skill not in present]
@@ -80,11 +111,8 @@ def gap_report(goal, existing):
         "matching_skills": [s for s in required if s in present],
         "missing_skills": missing,
         "readiness_percent": round(100 * (len(required) - len(missing)) / len(required)) if required else 0,
-        "recommendations": [
-            {"skill": skill, "resource": f"Study {skill} fundamentals", "activity": f"Build a small project using {skill}"}
-            for skill in missing
-        ],
-        "method": "deterministic skill-gap baseline (not trained AI)",
+        "recommendations": rank_learning(missing, goal, interests),
+        "method": "TF-IDF content ranking over curated resources (not a trained predictive model)",
     }
 
 
@@ -153,6 +181,11 @@ class API(BaseHTTPRequestHandler):
             return self.send_json(200, {"status": "ok"})
         if route == "/api/catalog":
             return self.send_json(200, {"career_paths": CAREER_PATHS, "skills": ALL_SKILLS})
+        if route == "/api/resources":
+            with connect_db(self.db_path) as db:
+                custom = [dict(row) for row in db.execute(
+                    "SELECT id,skill,title,url,description FROM learning_resources ORDER BY id")]
+            return self.send_json(200, {"curated": resource_catalog(), "custom": custom})
         with connect_db(self.db_path) as db:
             uid = self.user_id(db)
             if not uid:
@@ -161,7 +194,30 @@ class API(BaseHTTPRequestHandler):
                 user = db.execute("SELECT id, name, email, interests, goal FROM users WHERE id=?", (uid,)).fetchone()
                 skills = [r["skill"] for r in db.execute("SELECT skill FROM skills WHERE user_id=? ORDER BY skill", (uid,))]
                 completed = [r["skill"] for r in db.execute("SELECT skill FROM progress WHERE user_id=? ORDER BY skill", (uid,))]
-                return self.send_json(200, {"profile": dict(user), "skills": skills, "completed": completed, "analysis": gap_report(user["goal"], skills)})
+                analysis = gap_report(user["goal"], skills, user["interests"])
+                custom = {row["skill"]: dict(row) for row in db.execute(
+                    "SELECT skill,title,url,description FROM learning_resources ORDER BY id")}
+                for item in analysis["recommendations"]:
+                    if item["skill"] in custom:
+                        choice = custom[item["skill"]]
+                        item.update(resource=choice["title"], url=choice["url"], type="admin-curated")
+                return self.send_json(200, {"profile": dict(user), "skills": skills, "completed": completed, "analysis": analysis})
+            if route == "/api/notifications":
+                pref = db.execute("SELECT enabled FROM notification_preferences WHERE user_id=?", (uid,)).fetchone()
+                items = [dict(row) for row in db.execute(
+                    "SELECT id,title,created_at,read_at FROM notifications WHERE user_id=? ORDER BY id DESC LIMIT 30", (uid,))]
+                return self.send_json(200, {"enabled": bool(pref["enabled"]) if pref else False, "items": items})
+            if route in ("/api/admin/users", "/api/admin/audit"):
+                role = db.execute("SELECT role FROM users WHERE id=?", (uid,)).fetchone()
+                if role["role"] != "admin":
+                    return self.send_json(403, {"error": "Administrator access required"})
+                if route == "/api/admin/users":
+                    students = [dict(row) for row in db.execute(
+                        "SELECT id,name,email,role FROM users ORDER BY id LIMIT 200")]
+                    return self.send_json(200, {"users": students})
+                logs = [dict(row) for row in db.execute(
+                    "SELECT id,actor_id,action,target,created_at FROM audit_log ORDER BY id DESC LIMIT 100")]
+                return self.send_json(200, {"audit": logs})
         return self.send_json(404, {"error": "Unknown endpoint"})
 
     def do_POST(self):
@@ -196,7 +252,36 @@ class API(BaseHTTPRequestHandler):
             uid = self.user_id(db)
             if not uid:
                 return self.send_json(401, {"error": "Sign in first"})
-            if route == "/api/profile":
+            if route == "/api/notifications/preferences":
+                enabled = data.get("enabled")
+                if not isinstance(enabled, bool):
+                    return self.send_json(400, {"error": "enabled must be a boolean"})
+                db.execute("INSERT INTO notification_preferences (user_id,enabled) VALUES (?,?) "
+                           "ON CONFLICT(user_id) DO UPDATE SET enabled=excluded.enabled", (uid,int(enabled)))
+            elif route == "/api/notifications/read":
+                event_id = data.get("id")
+                if type(event_id) is not int or event_id <= 0:
+                    return self.send_json(400, {"error": "Invalid notification id"})
+                db.execute("UPDATE notifications SET read_at=? WHERE id=? AND user_id=?",
+                           (int(time.time()),event_id,uid))
+            elif route == "/api/admin/resources":
+                role = db.execute("SELECT role FROM users WHERE id=?", (uid,)).fetchone()
+                if role["role"] != "admin":
+                    return self.send_json(403, {"error": "Administrator access required"})
+                skill, title, url = data.get("skill"), data.get("title"), data.get("url")
+                description = data.get("description", "")
+                if (skill not in ALL_SKILLS or not isinstance(title,str) or not 1<=len(title.strip())<=100
+                        or not isinstance(url,str) or len(url)>500 or not isinstance(description,str)
+                        or len(description)>500):
+                    return self.send_json(400, {"error": "Invalid resource data"})
+                address = urlsplit(url)
+                if address.scheme != "https" or not address.hostname or address.username or address.password:
+                    return self.send_json(400, {"error": "A valid public HTTPS resource URL is required"})
+                db.execute("INSERT INTO learning_resources (skill,title,url,description) VALUES (?,?,?,?)",
+                           (skill,title.strip(),url,description))
+                db.execute("INSERT INTO audit_log (actor_id,action,target,created_at) VALUES (?,?,?,?)",
+                           (uid,"add-resource",skill,int(time.time())))
+            elif route == "/api/profile":
                 name = str(data.get("name", "")).strip()
                 interests = str(data.get("interests", "")).strip()
                 goal = str(data.get("goal", ""))
@@ -215,7 +300,12 @@ class API(BaseHTTPRequestHandler):
                 if skill not in ALL_SKILLS or not isinstance(completed,bool):
                     return self.send_json(400, {"error": "Invalid skill or completed value"})
                 if completed:
+                    existed = db.execute("SELECT 1 FROM progress WHERE user_id=? AND skill=?", (uid,skill)).fetchone()
                     db.execute("INSERT OR REPLACE INTO progress (user_id,skill,completed_at) VALUES (?,?,?)", (uid,skill,int(time.time())))
+                    opted = db.execute("SELECT enabled FROM notification_preferences WHERE user_id=?", (uid,)).fetchone()
+                    if not existed and opted and opted["enabled"]:
+                        db.execute("INSERT INTO notifications (user_id,title,created_at) VALUES (?,?,?)",
+                                   (uid,"Practice milestone: " + skill,int(time.time())))
                 else:
                     db.execute("DELETE FROM progress WHERE user_id=? AND skill=?", (uid,skill))
             elif route == "/api/logout":
@@ -235,7 +325,22 @@ def make_server(host="127.0.0.1", port=8000, db_path=None):
     return ThreadingHTTPServer((host, port), handler)
 
 
+def promote_admin(email, db_path=None):
+    """Explicit local maintenance task; never exposed as a remote API."""
+    initialize(db_path)
+    with connect_db(db_path) as db:
+        changed = db.execute("UPDATE users SET role='admin' WHERE email=?", (email.strip().lower(),))
+        db.commit()
+        return changed.rowcount == 1
+
+
 if __name__ == "__main__":
+    import sys
+    if len(sys.argv) == 3 and sys.argv[1] == "promote-admin":
+        if not promote_admin(sys.argv[2]):
+            raise SystemExit("Account not found. Register it before promotion.")
+        print("Administrator permission granted to the specified local account.")
+        raise SystemExit(0)
     server = make_server(os.getenv("HOST", "127.0.0.1"), int(os.getenv("PORT", "8000")))
     print(f"Upskilling MVP running at http://{server.server_address[0]}:{server.server_address[1]}")
     try:
