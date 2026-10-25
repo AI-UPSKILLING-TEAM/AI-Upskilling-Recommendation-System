@@ -5,7 +5,7 @@
 | Area | Verified implementation | Still necessary |
 |---|---|---|
 | Skill-gap analysis | Compares selected skill names to role-skill requirements | Weak-skill proficiency model (SRS FR-16) |
-| AI recommendations | Transparent TF-IDF cosine content ranking from small curated descriptions | Model or method evaluation on relevance judgments; complete project/certification recommendations (FR-18–FR-22) |
+| AI recommendations | Transparent TF-IDF cosine content ranking from small curated descriptions | Model or method evaluation on relevance judgments; expand and review the limited concrete project ideas and official certification options (FR-18–FR-22) |
 | Learning resources | Per-skill official learning links and admin addition | Comprehensive link/relevance checks; admin resource edit/delete (FR-37) |
 | Student profile | Name, email, goals, interests, courses/projects/certifications | SRS academic data fields and additional validation (FR-07) |
 | Practice progress | Persisted activity checkboxes, practice completion percentage, unfinished-first ordering | Progress assessment beyond practice flags; validation with SRS Test Plan |
