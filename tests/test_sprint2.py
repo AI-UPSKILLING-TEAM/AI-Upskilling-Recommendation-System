@@ -141,6 +141,19 @@ class SprintTwoTests(unittest.TestCase):
         self.assertEqual(self.call("/api/dashboard")[1]["analysis"]["required_skills"],["Python","SQL"])
         self.assertEqual(self.call("/api/admin/audit")[1]["audit"][0]["action"],"edit-role-requirements")
 
+    def test_project_and_optional_certification_recommendations(self):
+        self.student()
+        self.assertEqual(self.call("/api/profile",
+            {"name":"Student","interests":"data","goal":"Data Analyst"})[0],200)
+        analysis=self.call("/api/dashboard")[1]["analysis"]
+        self.assertTrue(any("project" in row and len(row["project"])>15
+                            for row in analysis["recommendations"]))
+        self.assertEqual(len(analysis["certifications"]),1)
+        self.assertTrue(analysis["certifications"][0]["url"].startswith("https://learn.microsoft.com/"))
+        self.assertEqual(self.call("/api/profile",
+            {"name":"Student","interests":"web","goal":"Web Developer"})[0],200)
+        self.assertEqual(self.call("/api/dashboard")[1]["analysis"]["certifications"],[])
+
     def test_unauthorized_write_and_validation(self):
         self.student()
         self.assertEqual(self.call("/api/notifications",token=None)[0],401)
