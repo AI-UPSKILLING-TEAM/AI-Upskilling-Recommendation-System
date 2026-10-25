@@ -227,6 +227,17 @@ class API(BaseHTTPRequestHandler):
                     "SELECT id,kind,title,skill FROM portfolio WHERE user_id=? ORDER BY id", (uid,))]
                 background = user["interests"] + " " + " ".join(item["title"] for item in portfolio)
                 analysis = gap_report(user["goal"], skills, background, career_catalog(db))
+                # Practicing a skill and already knowing it are different concepts.
+                # Track actual practice separately from the self-reported readiness score.
+                required = set(analysis["required_skills"])
+                practiced = set(completed)
+                analysis["practice_progress_percent"] = (
+                    round(100 * len(required & practiced) / len(required)) if required else 0
+                )
+                # Surface unpracticed resources first; preserve relevance order within each group.
+                analysis["recommendations"].sort(
+                    key=lambda item: item["skill"] in practiced
+                )
                 custom = {row["skill"]: dict(row) for row in db.execute(
                     "SELECT skill,title,url,description FROM learning_resources ORDER BY id")}
                 for item in analysis["recommendations"]:
