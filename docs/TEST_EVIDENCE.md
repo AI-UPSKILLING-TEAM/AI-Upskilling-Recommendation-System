@@ -1,16 +1,15 @@
-# Automated test evidence
+# Test evidence – Project 22
 
-**Repository:** AI-UPSKILLING-TEAM/AI-Upskilling-Recommendation-System  
-**Contributor:** ManishS943  
-**Date of verified CI result:** 25 October 2026  
-**CI URL:** https://github.com/AI-UPSKILLING-TEAM/AI-Upskilling-Recommendation-System/actions/runs/40213354398  
-**Observed result:** Completed successfully (Python CI, unit-tests job, Compile and unit test step).
+Automated tests run via GitHub Actions on the open pull request:
 
-Run locally with: `python -m unittest discover -s tests -v`.
+https://github.com/AI-UPSKILLING-TEAM/AI-Upskilling-Recommendation-System/pull/17
 
-### Test suites
-- `tests/test_app.py`: public endpoints, registration, login, profile, skill gaps, persistence and validation.
-- `tests/test_sprint2.py`: curated resources, deterministic personalization, notification opt-in/isolation, offline admin promotion and restricted operations.
+The project includes:
+- `tests/test_app.py`: registration, login, profile, goal, skill-gap, practice persistence and rejection of invalid input.
+- `tests/test_sprint2.py`: learning resources, TF-IDF ranking, notification isolation/opt-in, admin permissions and portfolio operations.
+- `tests/test_frontend_contract.py`: referenced DOM ids, duplicate HTML ids, linked browser script, external link rel safeguards.
+- GitHub Actions: Python compile/tests plus `node --check app.js`; separate SRS outline job.
 
-### Interpretation
-Automated tests passing is not equivalent to system acceptance. The course's original SRS, SAD and Test Plan, human browser walkthrough, accessibility audit, load/security testing and real demo recording require separate evidence. Do not supply fabricated screenshots or retroactive timelines.
+**Important:** GitHub Action success is evidence for the automated tests it ran, not proof of all SRS functionality. No browser accessibility audit, independent penetration test, real-user study, request-latency benchmark, or complete manual acceptance demonstration is claimed. See GitHub Actions for per-commit run and timestamps.
+
+Previous regression: a skill-requirement ordering change caused an earlier test failure; the role-skill query now preserves stable insertion order, and subsequent CI runs passed. Retain transparent test history instead of pretending a failure never occurred.
