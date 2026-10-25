@@ -95,6 +95,8 @@ class SprintTwoTests(unittest.TestCase):
         self.assertFalse(promote_admin("missing@example.com",self.db))
         self.assertEqual(self.call("/api/admin/users")[0],200)
         self.assertEqual(self.call("/api/admin/resources",{**resource,"url":"javascript:alert(1)"})[0],400)
+        self.assertEqual(self.call("/api/admin/resources",{**resource,"url":"https://[broken"})[0],400)
+        self.assertEqual(self.call("/api/admin/resources",{**resource,"url":"https://localhost/private"})[0],400)
         self.assertEqual(self.call("/api/admin/resources",resource)[0],200)
         self.assertEqual(self.call("/api/admin/audit")[1]["audit"][0]["action"],"add-resource")
         self.assertEqual(self.call("/api/resources")[1]["custom"][0]["title"],"Python exercise")
