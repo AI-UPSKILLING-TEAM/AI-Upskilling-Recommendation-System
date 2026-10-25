@@ -22,7 +22,7 @@ CATALOG = {
     "Testing": ("Python unittest documentation", "https://docs.python.org/3/library/unittest.html", "resource", "testing unit automated software quality"),
     "Linux": ("Ubuntu command-line introduction", "https://ubuntu.com/tutorials/command-line-for-beginners", "course", "linux shell commands cloud security operations"),
     "Networking": ("Cloudflare: Learning center", "https://www.cloudflare.com/learning/", "resource", "networking protocols internet security infrastructure"),
-    "Cloud Fundamentals": ("Microsoft Learn: Azure fundamentals", "https://learn.microsoft.com/en-us/training/paths/azure-fundamentals-describe-cloud-concepts/", "course", "cloud fundamentals computing architecture"),
+    "Cloud Fundamentals": ("Microsoft Learn: Azure fundamentals", "https://learn.microsoft.com/en-us/training/paths/microsoft-azure-fundamentals-describe-cloud-concepts/", "course", "cloud fundamentals computing architecture"),
     "Security Fundamentals": ("OWASP Top 10", "https://owasp.org/www-project-top-ten/", "resource", "cybersecurity security risk vulnerability web protection"),
 }
 
