@@ -43,10 +43,10 @@ Normal use needs only Python. Node/Playwright/axe-core are development tools. Op
 - [Design decisions / process status](docs/DEVIATIONS_AND_PENDING.md)
 - [Demo guide](docs/DEMO_RECORDING_GUIDE.md) and [release/freeze checklist](docs/RELEASE_AND_FREEZE_CHECKLIST.md)
 - [One-minute Sprint 1 recovery demo](evidence/videos/Sprint_1_Demo.mp4)
-- [Two-minute Sprint 2 implementation preview](evidence/videos/Sprint_2_Preview.mp4)
+- [Two-minute Sprint 2 working-product demo](evidence/videos/Sprint_2_Demo.mp4)
 - Original source: [SRS](SRS_Project_ID_22.pdf)
 
-The new SAD/Test Plan were created because the originals were unavailable. Current recordings are dated 25 October 2026; Sprint 1 was scheduled 19-23 October and Sprint 2 26-30 October. PR #17 remains subject to genuine independent review, owner merge and formal sprint acceptance/freeze. This branch and the submission package contain the candidate; main changes only after review/merge.
+The new SAD/Test Plan were created because the originals were unavailable. Sprint 1 recovery evidence is dated 25 October. The final Sprint 2 demo is dated 26 October, within its scheduled 26-30 October week. PR #17 remains subject to genuine independent review, owner merge and formal sprint acceptance/freeze. This branch and the submission package contain the candidate; main changes only after review/merge.
 
 ## Recommendation method
 TF-IDF cosine similarity ranks curated reference resources for missing/weak skills using goal, interests and portfolio context. The SRS allows reference data. This is content-based ranking, not a trained predictor of student outcomes. Practice completion does not prove proficiency. The synthetic evaluation and its limitations are documented.
@@ -62,3 +62,6 @@ TF-IDF cosine similarity ranks curated reference resources for missing/weak skil
 
 ## Backup and operational scope
 Use `python scripts/backup_db.py backup.db` for a verified online backup. Keep backups outside source publication. This is a local coursework server; internet deployment requires production hosting, HTTPS and a separate security/operations review.
+
+## Accepted release and freeze
+PR #17 is queued for native auto-merge behind a genuine teammate approval and required CI. After the reviewed merge and successful main verification, .github/workflows/release.yml checks the actual final-revision approval, creates the frozen v1.0.0 release with verified report/videos and closes accepted backlog items. See docs/RELEASE_AND_FREEZE_CHECKLIST.md. The automation cannot create a teammate approval.

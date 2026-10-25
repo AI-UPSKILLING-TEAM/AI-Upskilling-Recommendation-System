@@ -1,0 +1,85 @@
+name: Accepted release and freeze
+on:
+  workflow_run:
+    workflows: [Project verification]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: write
+  pull-requests: read
+  issues: write
+concurrency:
+  group: project-22-final-release
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify actual review and publish the accepted snapshot
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const {createHash}=require('node:crypto');
+            const {owner,repo}=context.repo;
+            const run=context.payload.workflow_run;
+            const sha=run.head_sha;
+            if(run.head_repository.full_name.toLowerCase()!==`${owner}/${repo}`.toLowerCase())throw Error('Repository mismatch');
+            const {data:pr}=await github.rest.pulls.get({owner,repo,pull_number:17});
+            if(!pr.merged || pr.base.ref!=='main' || pr.merge_commit_sha!==sha){
+              core.notice('This successful main run is not the accepted merge of PR #17. No release created.');return;
+            }
+            const reviews=await github.paginate(github.rest.pulls.listReviews,{owner,repo,pull_number:17,per_page:100});
+            const latest=new Map();
+            for(const review of reviews.sort((a,b)=>new Date(a.submitted_at)-new Date(b.submitted_at)))latest.set(review.user.login,review);
+            const approvals=[...latest.values()].filter(r=>r.state==='APPROVED' && r.commit_id===pr.head.sha && r.user.login!==pr.user.login);
+            if(!approvals.length)throw Error('A genuine independent approval of the final PR revision is required');
+            const tag='v1.0.0';
+            let tagRef;
+            try{tagRef=(await github.rest.git.getRef({owner,repo,ref:`tags/${tag}`})).data;}
+            catch(error){if(error.status!==404)throw error;}
+            if(tagRef){
+              const target=tagRef.object.type==='tag'?(await github.rest.git.getTag({owner,repo,tag_sha:tagRef.object.sha})).data.object.sha:tagRef.object.sha;
+              if(target!==sha)throw Error('Existing release tag points elsewhere; refusing to move it');
+            }else{
+              const annotated=await github.rest.git.createTag({owner,repo,tag,message:`Project 22 accepted baseline; PR #17; ${sha}`,object:sha,type:'commit'});
+              await github.rest.git.createRef({owner,repo,ref:`refs/tags/${tag}`,sha:annotated.data.sha});
+            }
+            const releases=await github.paginate(github.rest.repos.listReleases,{owner,repo,per_page:100});
+            let release=releases.find(r=>r.tag_name===tag);
+            const {data:commit}=await github.rest.git.getCommit({owner,repo,commit_sha:sha});
+            const {data:tree}=await github.rest.git.getTree({owner,repo,tree_sha:commit.tree.sha,recursive:'true'});
+            const paths=['Project_22_Report.pdf','evidence/videos/Sprint_1_Demo.mp4','evidence/videos/Sprint_2_Demo.mp4'];
+            const records=[];
+            for(const path of paths){
+              const entry=tree.tree.find(row=>row.path===path && row.type==='blob');
+              if(!entry)throw Error(`Required release file missing: ${path}`);
+              const {data:blob}=await github.rest.git.getBlob({owner,repo,file_sha:entry.sha});
+              const data=Buffer.from(blob.content.replace(/\s/g,''),'base64');
+              records.push({path,name:path.split('/').pop(),data,digest:`sha256:${createHash('sha256').update(data).digest('hex')}`});
+            }
+            const body=[
+              'Accepted Project 22 baseline. This record is generated only after an actual independent approval, owner-authorized merge and successful CI on the resulting main commit.',
+              `Accepted commit: ${sha}`,
+              `Pull request: ${pr.html_url}`,
+              `Actual approving reviewer(s): ${approvals.map(r=>r.user.login).join(', ')}`,
+              `Passing main verification: ${run.html_url}`,
+              `Release/freeze timestamp: ${new Date().toISOString()}`,
+              'Sprint 1 is documented recovery evidence. The final two-minute Sprint 2 product demo was captured on 26 October 2026, within its scheduled week.',
+              'New SAD/Test Plan and implementation decisions are included in the reviewed source. Reference-case ranking results do not establish real-student efficacy.',
+              'This tag is the frozen submission baseline. Subsequent fixes require separate reviewed changes and a new version; this workflow never moves an existing version tag.',
+              'SHA-256 assets:',...records.map(r=>`${r.name}: ${r.digest}`)
+            ].join('\n\n');
+            if(!release)release=(await github.rest.repos.createRelease({owner,repo,tag_name:tag,target_commitish:sha,name:'Project 22 - Accepted submission v1.0.0',body,draft:true,prerelease:false})).data;
+            if(release.draft){
+              for(const record of records){
+                const existing=release.assets.find(a=>a.name===record.name);
+                if(existing){if(existing.digest!==record.digest)throw Error(`Existing asset differs: ${record.name}`);continue;}
+                await github.rest.repos.uploadReleaseAsset({owner,repo,release_id:release.id,name:record.name,data:record.data,headers:{'content-type':record.name.endsWith('.pdf')?'application/pdf':'video/mp4','content-length':record.data.length}});
+              }
+              release=(await github.rest.repos.getRelease({owner,repo,release_id:release.id})).data;
+              if(records.some(r=>!release.assets.some(a=>a.name===r.name && a.state==='uploaded' && a.digest===r.digest)))throw Error('Release asset verification failed');
+              release=(await github.rest.repos.updateRelease({owner,repo,release_id:release.id,body,draft:false,prerelease:false})).data;
+            }
+            for(let number=1;number<=16;number++)await github.rest.issues.update({owner,repo,issue_number:number,state:'closed',state_reason:'completed'});
+            await core.summary.addHeading('Accepted Project 22 baseline').addLink('Release and freeze record',release.html_url).addRaw(`\n\nCommit: ${sha}\n\nApprovers: ${approvals.map(r=>r.user.login).join(', ')}`).write();

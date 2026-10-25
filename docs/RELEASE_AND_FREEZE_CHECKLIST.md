@@ -1,15 +1,14 @@
 # Release Candidate and Development Freeze
-Candidate prepared 25 October 2026. This record is not independent approval or a claim that the scheduled Sprint 2 has elapsed.
+Current preparation: 26 October 2026. The application, documents, 60-second Sprint 1 recovery video and new in-period 120-second Sprint 2 working-product demo are ready for actual review.
 
-## Prepared candidate
-Application, API/security regressions, browser/mobile checks, automated accessibility, recommendation reference evaluation, URL audit and local performance evidence are included. New SAD, Test Plan, manual, traceability, deviations and genuine browser recordings are included. Databases, credentials and session tokens are excluded from source publication.
+## Enforced acceptance gate
+Main requires a pull request, one genuine independent approval, four Python matrix checks, browser-tests and outline. Stale approvals are dismissed; administrators cannot bypass this rule. The source author is ManishS943. Poojitha, Manasa and Shanmuga have review requests. Approval of PR #17 should cover code, the new SAD/Test Plan and the explicitly documented design decisions.
 
-## Real team acceptance required
-- An authorized teammate other than the author reviews PR #17 and records genuine feedback/approval.
-- Repository owner merges after current CI passes.
-- Team accepts the new design/test documents and documented implementation decisions.
-- Actual Sprint-2 acceptance occurs during/after 26-30 October; refresh the final recording if required by the instructor.
-- Owner records accepted release commit/tag, reviewer and freeze date.
+## Queued completion
+GitHub auto-merge waits for a real approval and all required checks. After the merge, the Project verification workflow runs against main. Only a successful main push for PR #17's actual merge commit can trigger Accepted release and freeze. That workflow independently checks that the final PR revision has a non-author approval, creates an annotated v1.0.0 tag without moving an existing tag, uploads and SHA-256-verifies the report and both final demo videos, and publishes the release. Published release tags/assets are configured immutable. It then closes the 16 accepted backlog issues. The GitHub Project's closed-issue workflow updates their status.
 
-## Freeze procedure
-After approval and merge, create an annotated release tag for the accepted commit, record the tag/SHA, stop feature changes to the release baseline, and allow only documented critical fixes through reviewed PRs. Retain source, tests, documentation and videos. No tag, approval or freeze date is invented here.
+## Final evidence location
+The actual reviewer, accepted merge SHA, passing main run and release/freeze timestamp will be recorded at https://github.com/AI-UPSKILLING-TEAM/AI-Upskilling-Recommendation-System/releases/tag/v1.0.0 after the gate is satisfied. Until that release exists, independent approval, merge and final publication remain pending; this file does not invent them.
+
+## Verification and limits
+Seven offline release-gate simulations pass, covering missing, author-only and stale approval, foreign repository, unrelated merge, conflicting tag and the accepted publication order. These verify logic without contacting GitHub and do not claim that a real release was published. Future fixes require a separate reviewed version; the frozen tag is never moved.

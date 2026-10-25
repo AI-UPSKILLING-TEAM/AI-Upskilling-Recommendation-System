@@ -26,6 +26,7 @@ jobs:
           python -m compileall -q app.py administration.py recommendations.py scripts
           python -m unittest discover -s tests -v
           node --check app.js
+          node scripts/test_release_gate.cjs
           python scripts/evaluate_recommender.py
   browser-tests:
     runs-on: ubuntu-latest

@@ -1,5 +1,5 @@
 # Verification Evidence
-Baseline executed locally on 25 October 2026. These are actual observed results, with raw artifacts in evidence/. GitHub CI status must be checked for the published commit; a local pass does not assert remote CI success.
+Application baseline tested on 25 October; release gates and final Sprint 2 recording verified on 26 October 2026. These are actual observed results, with raw artifacts in evidence/. GitHub CI status must be checked for the published commit; a local pass does not assert remote CI success.
 
 | Check | Observed result | Artifact |
 |---|---|---|
@@ -16,3 +16,6 @@ Baseline executed locally on 25 October 2026. These are actual observed results,
 | Recordings | 60.00s and 120.00s; full decode checks passed | videos/recording-metadata.json |
 
 The benchmark uses a small local catalog and disposable account; it is not production capacity certification. The synthetic ranking set is non-independent and does not measure real-student learning effectiveness. axe-core leaves human usability/screen-reader review outstanding. The current candidate is ready for independent review, not a fabricated team approval.
+
+## Release preparation verification (26 October)
+Seven offline release-gate simulations pass (evidence/release-gate-tests.json). These are simulations, not an actual release. The new final Sprint 2 recording is 120.00 seconds and passes full decode verification; its actual capture timestamp is in videos/Sprint_2_Demo.metadata.json. Application code is unchanged from the previously passing baseline.

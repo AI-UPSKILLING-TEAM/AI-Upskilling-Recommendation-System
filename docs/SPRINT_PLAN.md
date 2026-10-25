@@ -26,4 +26,4 @@ Issue assignment includes actual implementation author ManishS943 and the curren
 
 Sprint 1 totals 30 points; Sprint 2 totals 37 points. These are planning estimates, not measured effort or completion percentages. PR #17 contains the candidate implementation. Independent teammate review, owner merge, in-period final Sprint-2 acceptance and a documented release freeze remain real team actions.
 
-For future changes: contributor creates their own branch and PR, links the issue/requirement, waits for CI, obtains an independent owner/teammate review, addresses findings and merges only after approval. Keep actual timestamps and record deviations during the demo. The current one-minute video is recovery evidence and the two-minute video is a preview.
+For future changes: contributor creates their own branch and PR, links the issue/requirement, waits for CI, obtains an independent owner/teammate review, addresses findings and merges only after approval. Keep actual timestamps and record deviations during the demo. The one-minute video is recovery evidence; a new final two-minute Sprint 2 demo was captured on 26 October. The older preview remains historical evidence.

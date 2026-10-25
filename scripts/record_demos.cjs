@@ -16,7 +16,7 @@ async function account(page,email){await fill(page,'#register-form',{name:'Demo 
  try{
   for(let i=0;i<60;i++){try{if((await fetch(base+'/health')).ok)break;}catch{}await sleep(100);}
   browser=await chromium.launch({headless:true});
-  for(const sprint of [1,2]){
+  for(const sprint of (process.env.SPRINT ? [Number(process.env.SPRINT)] : [1,2])){
    const duration=sprint===1?60:120;
    const context=await browser.newContext({viewport:{width:1280,height:720},recordVideo:{dir:out,size:{width:1280,height:720}}});
    const page=await context.newPage(),start=Date.now(),errors=[];page.on('pageerror',e=>errors.push(e.message));
