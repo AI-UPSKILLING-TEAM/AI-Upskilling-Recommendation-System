@@ -39,12 +39,13 @@ function render() {
   }
   const a=dashboard.analysis;
   $('readiness').textContent = `${a.readiness_percent}%`;
+  $('practice-progress').textContent = `${a.practice_progress_percent}%`;
   const gaps=$('gaps');gaps.replaceChildren();
   if(!a.career_goal) makeText(gaps,'p','Save a career goal to see your skill gaps.');
   else if(!a.missing_skills.length) makeText(gaps,'p','You have marked all required skills. Keep practicing!');
   else a.missing_skills.forEach(s=>makeText(gaps,'span',s,'tag'));
   const list=$('recommendations');list.replaceChildren();
-  if(!a.recommendations.length) makeText(list,'p','No missing skills for the selected career goal.');
+  if(!a.recommendations.length) makeText(list,'p',a.career_goal?'No missing skills for the selected career goal.':'Save a career goal to see recommendations.');
   for(const item of a.recommendations){const row=document.createElement('div');row.className='recommendation';makeText(row,'strong',item.skill);const link=document.createElement('a');link.textContent=item.resource;link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';row.append(link);makeText(row,'small',item.activity);list.append(row);}
   const progress=$('progress');progress.replaceChildren();
   for(const item of a.recommendations){
@@ -84,11 +85,11 @@ async function load(){
   }
   if(token) {try{await refresh();}catch(error){token='';sessionStorage.removeItem('skillpath_token');say('Session expired. Please sign in.');}}
 }
-$('register-form').addEventListener('submit', event=>{event.preventDefault();handle(async()=>{await request('/api/register','POST',formData(event.target));event.target.reset();say('Account created. Sign in to continue.');});});
-$('login-form').addEventListener('submit', event=>{event.preventDefault();handle(async()=>{const result=await request('/api/login','POST',formData(event.target));token=result.token;sessionStorage.setItem('skillpath_token',token);await refresh();say('Signed in.');});});
+$('register-form').addEventListener('submit', event=>{event.preventDefault();handle(async()=>{await request('/api/register','POST',formData(event.target));event.target.reset();},'Account created. Sign in to continue.');});
+$('login-form').addEventListener('submit', event=>{event.preventDefault();handle(async()=>{const result=await request('/api/login','POST',formData(event.target));token=result.token;sessionStorage.setItem('skillpath_token',token);await refresh();},'Signed in.');});
 $('profile-form').addEventListener('submit',event=>{event.preventDefault();handle(async()=>{await request('/api/profile','POST',formData(event.target));await refresh();});});
 $('skills-form').addEventListener('submit',event=>{event.preventDefault();handle(async()=>{const skills=[...event.target.querySelectorAll('input:checked')].map(x=>x.value);await request('/api/skills','POST',{skills});await refresh();});});
-$('logout').addEventListener('click',()=>handle(async()=>{await request('/api/logout','POST',{});token='';sessionStorage.removeItem('skillpath_token');$('dashboard').hidden=true;$('auth').hidden=false;say('Signed out.');}));
+$('logout').addEventListener('click',()=>handle(async()=>{await request('/api/logout','POST',{});token='';sessionStorage.removeItem('skillpath_token');$('dashboard').hidden=true;$('auth').hidden=false;},'Signed out.'));
 load().catch(e=>say(`Unable to load app: ${e.message}`));
 
 $('notifications-enabled').addEventListener('change',event=>handle(async()=>{
