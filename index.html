@@ -5,5 +5,25 @@
 <main><section class="intro"><p class="eyebrow">AI UPSKILLING TEAM · SOFTWARE ENGINEERING MINI-PROJECT</p><h1>Find your next skill.</h1><p>Choose a career goal, map what you know, and receive practical learning suggestions. This prototype uses a transparent skill-gap baseline, not a trained AI model.</p></section>
 <p id="message" class="message" role="status" aria-live="polite"></p>
 <section id="auth" class="columns"><div class="card"><h2>Create an account</h2><form id="register-form"><label>Name<input name="name" maxlength="80" required></label><label>Email<input type="email" name="email" required></label><label>Password (8+ characters)<input type="password" name="password" minlength="8" required></label><button type="submit">Register</button></form></div><div class="card"><h2>Sign in</h2><form id="login-form"><label>Email<input name="email" type="email" required></label><label>Password<input type="password" name="password" required></label><button type="submit">Sign in</button></form><p class="muted">Local educational prototype — do not reuse a real password.</p></div></section>
-<section id="dashboard" hidden><div class="row"><div><p class="eyebrow">STUDENT DASHBOARD</p><h2 id="greeting">Your learning path</h2></div><button class="secondary" id="logout">Sign out</button></div><div class="columns"><div class="card"><h3>My profile</h3><form id="profile-form"><label>Name<input id="profile-name" name="name" required></label><label>Career goal<select id="career-goal" name="goal" required></select></label><label>Interests<textarea id="interests" name="interests" maxlength="300" rows="2"></textarea></label><button type="submit">Save profile</button></form></div><div class="card"><h3>Skills I already have</h3><form id="skills-form"><fieldset><legend>Select your skills</legend><div id="skill-options" class="checks"></div></fieldset><button type="submit">Save skills</button></form></div></div><div class="columns"><div class="card"><h3>Skill gap analysis</h3><div id="readiness" class="metric">0%</div><p class="muted">skills matched for your career goal</p><div id="gaps"></div></div><div class="card"><h3>Recommended next steps</h3><div id="recommendations"></div></div></div><div class="card"><h3>Learning progress</h3><p class="muted">Mark the recommended topics you have practiced. Completing a topic does not automatically assert proficiency.</p><div id="progress"></div></div></section>
+<section id="dashboard" hidden><div class="row"><div><p class="eyebrow">STUDENT DASHBOARD</p><h2 id="greeting">Your learning path</h2></div><button class="secondary" id="logout">Sign out</button></div><div class="columns"><div class="card"><h3>My profile</h3><form id="profile-form"><label>Name<input id="profile-name" name="name" required></label><label>Career goal<select id="career-goal" name="goal" required></select></label><label>Interests<textarea id="interests" name="interests" maxlength="300" rows="2"></textarea></label><button type="submit">Save profile</button></form></div><div class="card"><h3>Skills I already have</h3><form id="skills-form"><fieldset><legend>Select your skills</legend><div id="skill-options" class="checks"></div></fieldset><button type="submit">Save skills</button></form></div></div><div class="columns"><div class="card"><h3>Skill gap analysis</h3><div id="readiness" class="metric">0%</div><p class="muted">skills matched for your career goal</p><div id="gaps"></div></div><div class="card"><h3>Recommended next steps</h3><div id="recommendations"></div></div></div><div class="card"><h3>Learning progress</h3><p class="muted">Mark the recommended topics you have practiced. Completing a topic does not automatically assert proficiency.</p><div id="progress"></div></div>
+<div class="columns">
+  <div class="card">
+    <h3>Learning notifications</h3>
+    <label class="toggle"><input type="checkbox" id="notifications-enabled"> Notify me when I log a practice milestone</label>
+    <p class="muted">Notifications are stored locally in the application, not emailed or pushed.</p>
+    <div id="notifications-list" aria-live="polite"></div>
+  </div>
+  <div class="card" id="admin-card" hidden>
+    <h3>Admin resource management</h3>
+    <p class="muted">Available only to an administrator promoted from the local server.</p>
+    <form id="admin-resource-form">
+      <label>Skill <select id="resource-skill" name="skill"></select></label>
+      <label>Resource title <input name="title" maxlength="100" required></label>
+      <label>Verified HTTPS link <input type="url" name="url" pattern="https://.*" required></label>
+      <label>Description <textarea name="description" maxlength="500"></textarea></label>
+      <button type="submit">Add resource</button>
+    </form>
+    <p id="admin-summary" class="muted"></p>
+  </div>
+</div></section>
 <footer>Project 22 · Educational prototype · No external AI services or tracking</footer></main></body></html>
