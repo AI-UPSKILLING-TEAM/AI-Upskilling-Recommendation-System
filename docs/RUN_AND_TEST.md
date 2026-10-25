@@ -1,26 +1,43 @@
-# Project 22: Run and Test Guide
+# Project 22 – Running and Testing the Prototype
 
-## Requirements
+## Prerequisites
 - Python 3.10 or newer.
-- No external Python packages required.
+- No external Python packages are needed for the application.
+- GitHub's separate SRS-outline workflow installs `pypdf` solely to read requirements.
 
-## Run
-1. From the repository root, run `python app.py`.
-2. Open http://127.0.0.1:8000 in a browser.
-3. Register with a disposable password of at least 8 characters, sign in, choose a career goal, select skills and save.
-4. Review the missing skills, recommended topics and learning progress checklist.
-5. Stop the server with Ctrl+C.
+## Start locally
+1. In the repository directory, run `python app.py`.
+2. Open **http://127.0.0.1:8000** on the same machine.
+3. Register using a demo-only email and **unique, disposable** password.
+4. Sign in. Set a career goal and your interests; select existing skills.
+5. Add demo courses, projects or certifications to your portfolio.
+6. Examine role readiness, missing skills and ranked external learning links.
+7. Tick a practice activity; check the *Practice progress* percentage.
+8. Opt into practice notifications and try marking a notification as read.
+9. Sign out and verify protected dashboard access is denied.
 
-The server binds to 127.0.0.1 by default for local demonstration; it is not configured for production deployment. SQLite creates a local upskill.db file automatically. The .gitignore excludes database files.
+## Optional admin demonstration
+To promote an **already registered** local demo user from the command line, stop the server and run:
 
-## Tests
-Run `python -m unittest discover -s tests -v`.
-A GitHub Actions workflow runs the same test command on pull requests to main.
+```bash
+python app.py promote-admin demo@example.com
+python app.py
+```
 
-## Application scope
-Implemented: account creation, authentication, profile, skill selection, career goal, deterministic skill-gap analysis, suggestions, progress flags and dashboard.
+After signing in, the role-protected admin panel supports adding resources and updating required skills for career roles. Only perform this on your own local test database; do not promote a real user or store genuine student data.
 
-Not yet implemented: actual machine-learning recommendations, curated external course links, notifications, administrator management, cloud deployment and multi-user load testing.
+## Automated verification
+```bash
+python -m compileall -q app.py recommendations.py scripts
+python -m unittest discover -s tests -v
+node --check app.js
+```
 
-## Safety and limitations
-This is an educational prototype, not a production service. Do not enter real student personal data. Tokens are stored in browser sessionStorage; no third-party tracking is used. Use HTTPS, stronger session/CSRF controls, user-data retention design, account recovery, and further security review before any real deployment.
+The JS check requires Node.js; Python tests use the standard library. GitHub Actions performs all checks on PRs into main.
+
+## Known boundaries
+- Recommendations rank course/resource descriptions with TF-IDF cosine similarity; there is **no trained predictive AI model**.
+- Learning links are educational references, not guaranteed to be current or universally appropriate.
+- Notifications are local in-app events, not messages sent by email, SMS or push.
+- Not all FR-01–FR-38 and NFR-01–NFR-10 acceptance criteria are met; see `REQUIREMENTS_TRACEABILITY_DRAFT.md`.
+- This is a local demonstration server bound to 127.0.0.1 by default. Do **not** expose it publicly without HTTPS, stronger account and session controls, testing and privacy protections.
