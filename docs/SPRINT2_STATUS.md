@@ -21,7 +21,7 @@
 - **Resources:** Links to official learning material were added. Individual project/certification relevance, availability and local provider quality are not comprehensively evaluated.
 - **Notifications:** In-app milestones only. No email, SMS or push notification delivery.
 - **Admin:** Small management surface only; no fully implemented administrator approval, suspension, report or analytics system.
-- **SRS/SAD/Test Plan:** The repo contains the SRS PDF; exact FR/NFR IDs and original SAD/Test Plan versions need the team to cross-check before sign-off.
+- **SRS/SAD/Test Plan:** The repo contains the SRS PDF; FR-01–FR-38 and NFR-01–NFR-10 are now mapped to the prototype in REQUIREMENTS_TRACEABILITY_DRAFT.md; original SAD/Test Plan versions still require team sign-off.
 - **GitHub Project board:** Not created through the current connector. Link issues and add story point / sprint fields manually in GitHub Projects.
 - **Team review and demos:** PR #17 requires a teammate's genuine review. Record and upload actual one-minute and two-minute working-product videos; scripts are in DEMO_RECORDING_GUIDE.md.
 - **Freeze:** Only after 30 October or an explicit team decision and reviewed release, not automatically now.
