@@ -1,6 +1,6 @@
 # Software Engineering Mini-Project Deliverables Part-2
 **Project:** AI-Powered Upskilling Recommendation System (ID 22)  
-**Source:** existing repository README; repo SRS_Project_ID_22.pdf must be cross-checked at FR/NFR level before final submission.  
+**Source:** repository README and SRS_Project_ID_22.pdf; see REQUIREMENTS_TRACEABILITY_DRAFT.md for extracted FR-01–FR-38 / NFR-01–NFR-10 mapping. Original SAD and submitted Test Plan still need team comparison.  
 **Actual preparation:** 25 October 2026. Sprint-1 was scheduled for 19–23 October, so work committed now must not be represented as completed on those dates.
 
 ## Backlog and sprints
