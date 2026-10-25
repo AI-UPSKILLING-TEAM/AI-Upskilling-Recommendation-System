@@ -1,0 +1,51 @@
+1
+00:00:00,000 --> 00:00:04,000
+Project 22 | Sprint 2 implementation preview | Captured 25 Oct 2026
+
+2
+00:00:04,000 --> 00:00:12,000
+Register and sign in with a disposable demonstration account
+
+3
+00:00:12,000 --> 00:00:20,000
+Choose Cloud Engineer and complete the academic profile
+
+4
+00:00:20,000 --> 00:00:28,000
+Beginner proficiency can reveal a weak skill
+
+5
+00:00:28,000 --> 00:00:40,000
+Personalized learning topics address missing and weak skills
+
+6
+00:00:40,000 --> 00:00:49,000
+Add a practical project to the student portfolio
+
+7
+00:00:49,000 --> 00:01:00,000
+Track practice and receive an in-app milestone
+
+8
+00:01:00,000 --> 00:01:10,000
+Reload to verify that learning progress is retained
+
+9
+00:01:10,000 --> 00:01:20,000
+Authorized administrator workspace
+
+10
+00:01:20,000 --> 00:01:31,000
+Create a course using a trusted HTTPS resource
+
+11
+00:01:31,000 --> 00:01:42,000
+Update the skills and target levels required by a career role
+
+12
+00:01:42,000 --> 00:01:51,000
+Audit log records shared-data changes
+
+13
+00:01:51,000 --> 00:02:00,000
+Updated path | Final Sprint 2 acceptance is scheduled 26-30 Oct 2026
