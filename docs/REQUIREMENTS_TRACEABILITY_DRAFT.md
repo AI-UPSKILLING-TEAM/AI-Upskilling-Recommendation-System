@@ -1,37 +1,42 @@
-# Project 22 — SRS requirements traceability (audit draft)
+# Project 22 – SRS requirements traceability (review draft)
 
-**SRS source:** `SRS_Project_ID_22.pdf` in repository `main`, extracted by the `SRS requirement outline` GitHub Actions job on 25 October 2026. **No SRS contents or FR/NFR IDs are fabricated.**
+**Source:** The 15-page repository `SRS_Project_ID_22.pdf`, requirement text extracted by the GitHub Actions SRS outline job on 25 October 2026. These requirement IDs are from that document, not invented IDs. The original SAD and submitted Test Plan were not available for comparison in the repository at review time.
 
-The actual SRS contains FR-01–FR-38 and NFR-01–NFR-10. Text from PDF page 11 (covering portions of FR-18–FR-31) was not extractable as plain text by pypdf; requirement section ranges are confirmed by the SRS summary on page 14. Before final acceptance, inspect page 11 visually and verify each exact requirement.
+**Evidence branch:** `feature/manish-part2-mvp` (PR #17). Feature is not accepted merely because code exists; team review and test evidence are required.
 
-| SRS requirements | Feature | Code / evidence | Assessment |
+| Original SRS ID | Scope | Code/evidence | Status / limitation |
 |---|---|---|---|
-| FR-01–FR-04 (p. 9) | Register, validate input, login and invalid-login errors | `app.py`, `tests/test_app.py` | Implemented prototype |
-| FR-05–FR-07 (p. 10) | Create/edit profile and academic/career data | Profile, interests, goal in `app.py`; portfolio records | Partial: detailed academic info to verify |
-| FR-08–FR-10 (p. 10) | Add, edit/remove and persist student skills | `/api/skills`, SQLite, automated tests | Implemented prototype |
-| FR-11–FR-13 (p. 10) | List, choose and persist career goal | Catalog and profile endpoint | Implemented prototype |
-| FR-14–FR-17 (p. 10) | Skill inventory, career requirements, missing/weak skills, gap display | `gap_report()`, dashboard | Partial: missing skills, not graded weakness |
-| FR-18–FR-22 (p. 11, SRS summary p. 14) | AI recommendation system | `recommendations.py` content-based TF-IDF ranking | Partial: not a trained ML model; exact FR wording needs visual review |
-| FR-23–FR-25 (p. 11, summary p. 14) | Learning resources | Curated reference links, admin resource additions, course/project/certification portfolio | Partial: exact matching and provider verification incomplete |
-| FR-26–FR-29 (p. 11, summary p. 14) | Progress tracking | SQLite practice tracking, persistence/opt-in milestones | Partial: progress tracked per skill, not per learning-resource ID |
-| FR-30–FR-33 (pp. 11–12, summary p. 14) | Dashboard | Profile, gaps, resource links, progress | Implemented prototype; manual usability check pending |
-| FR-34–FR-38 (p. 12) | Manage students, skills, roles, courses/resources and role requirements | Admin list, resource additions, role/requirement editor, audit log | Partial: admin student editing and catalog skill management limited |
-| NFR-01–NFR-02 (p. 12) | Response time / recommendation latency | Lightweight stdlib server and local algorithm | Needs measured acceptance evidence (SRS says "reasonable time") |
-| NFR-03 (p. 12) | Secure password storage | PBKDF2-HMAC-SHA256 salted hashes | Implemented locally; independent security review pending |
-| NFR-04–NFR-05 (p. 12) | Only authenticated user data access; admin-only operations | Bearer sessions, per-user SQL queries, admin role checks | Automated regression tests; further threat testing pending |
-| NFR-06–NFR-07 (p. 12) | Usability, navigation | Responsive frontend | Human accessibility/usability evidence pending |
-| NFR-08–NFR-09 (p. 12) | Recommendations based on available data; progress persistence | SQLite + unit/integration tests | Implemented prototype |
-| NFR-10 (p. 13) | Modularity | Separate `app.py`, `recommendations.py`, frontend and tests | Implemented prototype |
+| FR-01–FR-04 | Student registration and login | `app.py`, `tests/test_app.py` | Implemented for local prototype. No email ownership verification/password recovery |
+| FR-05–FR-07 | Student profile, academic/career data | Profile, interests, goals, portfolio | Partial: academic fields are not comprehensively modeled |
+| FR-08–FR-10 | Student skill add/update/remove and persistence | Skills API, dashboard, tests | Implemented for fixed skill catalog |
+| FR-11–FR-13 | Career role list/selection/storage | Career catalog, SQLite, profile | Implemented |
+| FR-14–FR-17 | Existing/required/missing or weak skills and gap display | Gap report/dashboard | Partial: checks missing skill names; does not assess weak proficiency levels |
+| FR-18–FR-20 | Analyze gaps, personalized recommendations and courses/resources | `recommendations.py`, curated links | Partial: TF-IDF content ranking, **not evaluated trained AI** |
+| FR-21–FR-22 | Suitable project and certification recommendations | Generic project activity; portfolio tracking | Partial: no curated project/certification recommender |
+| FR-23–FR-25 | Display/categorize/view learning resources | `/api/resources`, per-skill UI links | Implemented for a small educational catalog; no complete link audit |
+| FR-26–FR-28 | Mark, calculate and display learning progress | Practice flags; progress percentage; UI/tests | Implemented for practice milestones, not skill mastery |
+| FR-29 | Update recommendations after progress | Unpracticed resource cards appear first | Basic reprioritization; no personalized feedback-trained ranking |
+| FR-30–FR-33 | Goal, gaps, resources, progress dashboard | `index.html`, `app.js`, tests | Implemented in local prototype; manual browser review pending |
+| FR-34 | Administrator manages student data | Authorized user list | Partial: lacks student edit/suspension interface |
+| FR-35 | Administrator manages skills | Admin edits career-role skill requirements | Partial: cannot create/delete master skill catalog |
+| FR-36, FR-38 | Administrator manages career roles/required skills | `/api/admin/roles` | Basic update/create implemented |
+| FR-37 | Administrator manages courses and learning resources | `/api/admin/resources` | Partial: add only, no edit/delete |
+| NFR-01, NFR-02 | Response/recommendation time | Small local app, deterministic ranking | **Not benchmarked** against representative use |
+| NFR-03 | Secure password storage | PBKDF2-HMAC-SHA256 salted hashes | Prototype control implemented; production audit needed |
+| NFR-04 | Private data only for signed-in users | Bearer sessions, per-user queries, tests | Tested for core endpoints, additional security review needed |
+| NFR-05 | Admin-only functions | Role checks/tests | Tested for exposed admin routes |
+| NFR-06, NFR-07 | Usable interface and navigation | Responsive single-page dashboard, contract tests | Human usability/accessibility test pending |
+| NFR-08, NFR-09 | Recommendations from available data; persistent progress | Catalog and SQLite/tests | Basic prototype support; recovery/load testing pending |
+| NFR-10 | Maintainability/modular design | `app.py`, `recommendations.py`, automated tests | Basic modularization, design review pending |
 
-## Missing course project management evidence
-SRS pages 3 and 7 explicitly mention student **courses, projects and certifications**. The prototype now allows students to add and remove all three types in their private portfolio, and these titles can affect the recommendation context. It does not infer skill mastery from the portfolio automatically.
+## Source-specific observations
+- SRS section 7 names Student, Skill, Career Role, Course, Project, Certification, Learning Resource, Recommendation, and Progress as entities. The current schema uses some simplified relations; it is **not** a one-to-one implementation of every SRS entity.
+- The SRS calls for recommendation of courses, projects and certifications. A generic practice activity and portfolio entry do not fully satisfy the project/certification recommendation requirements.
+- Weak-skill scoring requires actual proficiency measurements that the current demo has not collected.
 
-## Needed for acceptance
-- [ ] Visually confirm scanned/nonextractable page 11 and exact FR-18–FR-31 wording.
-- [ ] Obtain the previously submitted SAD and Test Plan; map design sections/test IDs to each SRS row.
-- [ ] Test on desktop and mobile browsers using real manual evidence.
-- [ ] Have the assigned reviewer check and approve the traceability and deviations.
-- [ ] Provide actual one-minute and two-minute demo videos.
-- [ ] Link GitHub Projects backlog board and confirm team assignments.
-
-**Status:** Audit draft. Do not claim full SRS/SAD/Test Plan conformity before these steps.
+## Before signing off
+1. Review the submitted SAD, original Test Plan and any required acceptance thresholds against these exact IDs.
+2. Run GitHub Actions, JS/HTML contract tests, and a human browser walkthrough; keep actual links/screenshots as evidence.
+3. Review/merge PR with a **different teammate** after approval.
+4. Upload genuine Sprint 1 (one-minute) and Sprint 2 (two-minute) demos when recorded.
+5. Close corresponding issues only when accepted and document all deviations.
