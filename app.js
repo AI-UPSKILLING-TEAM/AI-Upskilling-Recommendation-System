@@ -47,6 +47,14 @@ function render() {
   const list=$('recommendations');list.replaceChildren();
   if(!a.recommendations.length) makeText(list,'p',a.career_goal?'No missing skills for the selected career goal.':'Save a career goal to see recommendations.');
   for(const item of a.recommendations){const row=document.createElement('div');row.className='recommendation';makeText(row,'strong',item.skill);const link=document.createElement('a');link.textContent=item.resource;link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';row.append(link);makeText(row,'small',item.activity);list.append(row);}
+  const certs=$('certifications');certs.replaceChildren();
+  if(!a.certifications.length)makeText(certs,'p','No recommended certification for this career path at present.','muted');
+  for(const cert of a.certifications){
+    const wrap=document.createElement('div');wrap.className='recommendation';
+    const link=document.createElement('a');link.href=cert.url;link.textContent=cert.title;
+    link.target='_blank';link.rel='noopener noreferrer';wrap.append(link);
+    makeText(wrap,'small',cert.note);certs.append(wrap);
+  }
   const progress=$('progress');progress.replaceChildren();
   for(const item of a.recommendations){
     const wrap=document.createElement('div');wrap.className='progress-item';
