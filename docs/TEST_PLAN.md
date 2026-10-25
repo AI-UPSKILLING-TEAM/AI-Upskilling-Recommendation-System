@@ -12,6 +12,10 @@ Verify the core student workflow in the submitted Project 22 prototype. The alre
 6. Skill-gap analysis lists missing required skills and computes readiness correctly.
 7. Practiced-topic progress persists and logout revokes the session.
 8. Invalid goal, unknown skill and malformed progress values are rejected.
+9. Course/project/certification portfolio items are persisted per student.
+10. Admin-only routes reject students, and malformed resource URLs return HTTP 400.
+11. In-app practice notifications are opt-in and scoped to their owners.
+12. HTML element references and JavaScript syntax are checked in CI.
 
 ## Run
 `python -m unittest discover -s tests -v`
@@ -25,4 +29,4 @@ Verify the core student workflow in the submitted Project 22 prototype. The alre
 - Resize to a mobile width and verify forms remain usable.
 
 ## Not yet validated
-Accessibility audit, high-volume concurrent load, security penetration testing, AI model evaluation, notification delivery and admin authorization. Do not report these tests as passed.
+Accessibility audit, high-volume concurrent load, security penetration testing, evaluated learning outcomes and outbound notification delivery. Basic admin authorization is covered by integration tests; it has not received an independent security assessment. Do not report these tests as passed.
