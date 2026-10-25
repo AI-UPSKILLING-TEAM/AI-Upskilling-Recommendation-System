@@ -3,9 +3,9 @@
 The previous baseline recommended every missing skill in fixed role order. The current implementation performs **TF-IDF + cosine content-based ranking** over a small curated corpus of descriptions of learning resources.
 
 ## Inputs and output
-Inputs: student-provided career goal, interests, completed skill inventory, and a fixed role-to-required-skill mapping. Missing skills are derived by set difference. Candidate learning materials are associated with those missing skills. The query string (career + interests) and resource text are tokenized, transformed into TF-IDF vectors, and ranked by cosine score with original skill order as a stable tie-breaker.
+Inputs: student-provided career goal, interests, self-reported existing skill inventory, and a fixed role-to-required-skill mapping. Missing skills are derived by set difference. Candidate learning materials are associated with those missing skills. The query string (career + interests) and resource text are tokenized, transformed into TF-IDF vectors, and ranked by cosine score with original skill order as a stable tie-breaker.
 
-Outputs: readiness fraction; missing skills; ranked recommendations with skill, resource title, HTTPS URL, type, relevance score, and a short project activity.
+Outputs: readiness fraction; missing skills; ranked recommendations with skill, resource title, HTTPS URL, type, relevance score, and a short project activity; separate practice-progress percentage and unpracticed-first display.
 
 ## What is and is not AI
 TF-IDF/cosine is a classical information retrieval and content-based recommendation approach. It does **not** learn from historical student engagement data, does not train neural networks, and does not establish prediction accuracy or educational effectiveness. Do not present it as a trained machine-learning model.
