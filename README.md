@@ -77,3 +77,26 @@ See:
 - [Release checklist](docs/RELEASE_AND_FREEZE_CHECKLIST.md)
 
 **Open acceptance work:** Team review of PR #17, confirmation against original SAD/Test Plan, GitHub Project board linking, and recording/uploading the authentic 1-minute and 2-minute demo videos.
+
+## Running the current prototype (Part-2 PR #17)
+
+The application is available on branch `feature/manish-part2-mvp` until a teammate reviews and merges the pull request.
+
+```bash
+python app.py
+```
+
+Open **http://127.0.0.1:8000** in a browser. Use dummy data and a disposable password for this local educational prototype. Python 3.10+ is required; no application packages need to be installed.
+
+To verify the implementation:
+
+```bash
+python -m unittest discover -s tests -v
+node --check app.js
+```
+
+Node.js is needed only for the optional JavaScript syntax check; GitHub Actions runs this and the Python tests automatically.
+
+The prototype demonstrates registration, login, profile and career goals, skill-gap analysis, curated learning links, specific project ideas, limited certification suggestions, in-app practice tracking, and a role-protected admin panel. Recommendations use **TF-IDF content-based ranking**, not a trained or empirically evaluated AI model.
+
+**For submission:** See [requirements traceability](docs/REQUIREMENTS_TRACEABILITY_DRAFT.md), [known deviations](docs/DEVIATIONS_AND_PENDING.md), [run and test instructions](docs/RUN_AND_TEST.md), and [real demo video guide](docs/DEMO_RECORDING_GUIDE.md). GitHub Project setup, peer PR review/merge, actual one-minute and two-minute demo recordings, final SAD/Test Plan checks and release freeze remain pending.
