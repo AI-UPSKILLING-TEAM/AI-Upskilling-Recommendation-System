@@ -1,17 +1,23 @@
-# Deviations and Open Deliverables
+# Deviations and Remaining Part-2 Deliverables
 
-Prepared on 25 October 2026. This file records known deviations; it does not certify sprint completion.
+**Review date:** 25 October 2026. This records prototype status and outstanding tasks; it is not a statement that Sprint 1 was completed during 19–23 October.
 
-| Area | Current implementation | Required follow-up |
+| Area | Verified implementation | Still necessary |
 |---|---|---|
-| AI recommendations | Transparent deterministic gap matching based on a role-to-skill table | Implement and evaluate an actual chosen ML/AI recommender, or obtain an explicit approved scope change |
-| Learning resources | Suggested study topics and practice activities, not external course/certification URLs | Add vetted resources and links with data provenance |
-| Notifications | Not implemented | Design and test notification delivery |
-| Administrator | Not implemented | Add protected admin roles and management screens |
-| Security | PBKDF2 hashed passwords, parameterized SQLite, expiring bearer tokens | Production-grade threat model, rate limits, HTTPS, password-reset and user privacy review |
-| Documentation | New run, test and sprint-plan docs | Compare with original SAD and Test Plan; finalize documentation |
-| Sprint 1 one-minute video | Not recorded/uploaded | Team records actual running software and uploads |
-| Sprint 2 two-minute video | Not recorded/uploaded | Team records completed Sprint 2 running software and uploads |
-| Development freeze | Not done | Freeze only after Sprint 2 review and docs completion |
+| Skill-gap analysis | Compares selected skill names to role-skill requirements | Weak-skill proficiency model (SRS FR-16) |
+| AI recommendations | Transparent TF-IDF cosine content ranking from small curated descriptions | Model or method evaluation on relevance judgments; complete project/certification recommendations (FR-18–FR-22) |
+| Learning resources | Per-skill official learning links and admin addition | Comprehensive link/relevance checks; admin resource edit/delete (FR-37) |
+| Student profile | Name, email, goals, interests, courses/projects/certifications | SRS academic data fields and additional validation (FR-07) |
+| Practice progress | Persisted activity checkboxes, practice completion percentage, unfinished-first ordering | Progress assessment beyond practice flags; validation with SRS Test Plan |
+| Notifications | Opt-in in-app milestones | No email/SMS/push; if required by submitted SAD, document deviation |
+| Administrator | Role-protected list, resource additions, editable role requirements | Full student management and skill-catalog editing (FR-34, FR-35) |
+| Security | Salted PBKDF2 password hashing, expiring token, per-user queries, basic role checks | HTTPS deployment, throttling, recovery, security/privacy review |
+| CI tests | Python tests and JS syntax/DOM contract checks | Manual responsive accessibility testing, measured performance/recovery |
+| SRS alignment | FR-01–FR-38 and NFR-01–NFR-10 mapped in traceability draft | Original SAD/Test Plan unavailable in repo; exact design/test compliance requires reviewer |
+| GitHub Project board | 16 tracked GitHub issues | Create/link board, story-point and sprint fields; agree assignees |
+| Sprint 1 demo | Recording guide is prepared | Genuine one-minute video recorded and uploaded by team |
+| Sprint 2 demo | Recording guide is prepared | Genuine two-minute video recorded and uploaded by team |
+| Pull request | PR #17 open under ManishS943 | Owner/teammate review and merge |
+| Development freeze | Release checklist prepared | Only after Sprint 2 review and release approval |
 
-The GitHub branch and pull request were created on the date work actually took place, after the planned Sprint 1 period; do not backdate or misrepresent this work.
+There is no evidence of a completed sprint review or recorded videos yet. Do not backdate commits, fake outcomes, or close work before acceptance.
