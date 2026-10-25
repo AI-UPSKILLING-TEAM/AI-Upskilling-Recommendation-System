@@ -16,7 +16,7 @@ for number, page in enumerate(reader.pages, 1):
     raw = page.extract_text() or ""
     lines = [re.sub(r"\s+", " ", line).strip() for line in raw.splitlines()]
     lines = [line for line in lines if line]
-    selected = pattern.search(raw) is not None
+    selected = pattern.search(raw) is not None or 9 <= number <= 13
     if not selected:
         continue
     chunk = "\n".join(lines)
