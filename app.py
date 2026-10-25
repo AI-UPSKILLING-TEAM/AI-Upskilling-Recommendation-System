@@ -94,15 +94,42 @@ def initialize(db_path=None):
                 target TEXT NOT NULL,
                 created_at INTEGER NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS portfolio (
+                id INTEGER PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                kind TEXT NOT NULL CHECK(kind IN ('course','project','certification')),
+                title TEXT NOT NULL,
+                skill TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS career_roles (
+                name TEXT PRIMARY KEY
+            );
+            CREATE TABLE IF NOT EXISTS career_role_skills (
+                role TEXT NOT NULL REFERENCES career_roles(name) ON DELETE CASCADE,
+                skill TEXT NOT NULL,
+                PRIMARY KEY (role,skill)
+            );
         """)
+        if not db.execute("SELECT 1 FROM career_roles LIMIT 1").fetchone():
+            for role, skills in CAREER_PATHS.items():
+                db.execute("INSERT INTO career_roles (name) VALUES (?)", (role,))
+                db.executemany("INSERT INTO career_role_skills (role,skill) VALUES (?,?)",
+                               [(role,skill) for skill in skills])
+
+
+def career_catalog(db):
+    role_names = [row["name"] for row in db.execute("SELECT name FROM career_roles ORDER BY name")]
+    return {role: [row["skill"] for row in db.execute(
+                "SELECT skill FROM career_role_skills WHERE role=? ORDER BY skill", (role,))]
+            for role in role_names}
 
 
 def password_digest(password, salt):
     return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), bytes.fromhex(salt), 300_000).hex()
 
 
-def gap_report(goal, existing, interests=''):
-    required = CAREER_PATHS.get(goal, [])
+def gap_report(goal, existing, interests='', career_paths=None):
+    required = (CAREER_PATHS if career_paths is None else career_paths).get(goal, [])
     present = set(existing)
     missing = [skill for skill in required if skill not in present]
     return {
@@ -180,7 +207,9 @@ class API(BaseHTTPRequestHandler):
         if route == "/health":
             return self.send_json(200, {"status": "ok"})
         if route == "/api/catalog":
-            return self.send_json(200, {"career_paths": CAREER_PATHS, "skills": ALL_SKILLS})
+            with connect_db(self.db_path) as db:
+                paths = career_catalog(db)
+            return self.send_json(200, {"career_paths": paths, "skills": ALL_SKILLS})
         if route == "/api/resources":
             with connect_db(self.db_path) as db:
                 custom = [dict(row) for row in db.execute(
@@ -194,14 +223,22 @@ class API(BaseHTTPRequestHandler):
                 user = db.execute("SELECT id, name, email, interests, goal, role FROM users WHERE id=?", (uid,)).fetchone()
                 skills = [r["skill"] for r in db.execute("SELECT skill FROM skills WHERE user_id=? ORDER BY skill", (uid,))]
                 completed = [r["skill"] for r in db.execute("SELECT skill FROM progress WHERE user_id=? ORDER BY skill", (uid,))]
-                analysis = gap_report(user["goal"], skills, user["interests"])
+                portfolio = [dict(row) for row in db.execute(
+                    "SELECT id,kind,title,skill FROM portfolio WHERE user_id=? ORDER BY id", (uid,))]
+                background = user["interests"] + " " + " ".join(item["title"] for item in portfolio)
+                analysis = gap_report(user["goal"], skills, background, career_catalog(db))
                 custom = {row["skill"]: dict(row) for row in db.execute(
                     "SELECT skill,title,url,description FROM learning_resources ORDER BY id")}
                 for item in analysis["recommendations"]:
                     if item["skill"] in custom:
                         choice = custom[item["skill"]]
                         item.update(resource=choice["title"], url=choice["url"], type="admin-curated")
-                return self.send_json(200, {"profile": dict(user), "skills": skills, "completed": completed, "analysis": analysis})
+                return self.send_json(200, {"profile": dict(user), "skills": skills,
+                                            "portfolio": portfolio, "completed": completed, "analysis": analysis})
+            if route == "/api/portfolio":
+                items = [dict(row) for row in db.execute(
+                    "SELECT id,kind,title,skill FROM portfolio WHERE user_id=? ORDER BY id", (uid,))]
+                return self.send_json(200, {"items": items})
             if route == "/api/notifications":
                 pref = db.execute("SELECT enabled FROM notification_preferences WHERE user_id=?", (uid,)).fetchone()
                 items = [dict(row) for row in db.execute(
@@ -264,6 +301,35 @@ class API(BaseHTTPRequestHandler):
                     return self.send_json(400, {"error": "Invalid notification id"})
                 db.execute("UPDATE notifications SET read_at=? WHERE id=? AND user_id=?",
                            (int(time.time()),event_id,uid))
+            elif route == "/api/portfolio/add":
+                kind,title,skill = data.get("kind"),data.get("title"),data.get("skill")
+                if (kind not in ("course","project","certification")
+                        or not isinstance(title,str) or not 1 <= len(title.strip()) <= 120
+                        or skill not in ALL_SKILLS):
+                    return self.send_json(400, {"error": "Invalid portfolio item"})
+                db.execute("INSERT INTO portfolio (user_id,kind,title,skill) VALUES (?,?,?,?)",
+                           (uid,kind,title.strip(),skill))
+            elif route == "/api/portfolio/delete":
+                item_id = data.get("id")
+                if type(item_id) is not int or item_id <= 0:
+                    return self.send_json(400, {"error": "Invalid item id"})
+                db.execute("DELETE FROM portfolio WHERE user_id=? AND id=?", (uid,item_id))
+            elif route == "/api/admin/roles":
+                role_info = db.execute("SELECT role FROM users WHERE id=?", (uid,)).fetchone()
+                if role_info["role"] != "admin":
+                    return self.send_json(403, {"error": "Administrator access required"})
+                role, skills = data.get("role"),data.get("skills")
+                if (not isinstance(role,str) or not 1<=len(role.strip())<=80
+                        or not isinstance(skills,list) or not skills or len(skills)>len(ALL_SKILLS)
+                        or any(not isinstance(skill,str) or skill not in ALL_SKILLS for skill in skills)):
+                    return self.send_json(400, {"error": "Invalid role requirements"})
+                role = role.strip()
+                db.execute("INSERT OR IGNORE INTO career_roles (name) VALUES (?)", (role,))
+                db.execute("DELETE FROM career_role_skills WHERE role=?", (role,))
+                db.executemany("INSERT OR IGNORE INTO career_role_skills (role,skill) VALUES (?,?)",
+                               [(role,skill) for skill in skills])
+                db.execute("INSERT INTO audit_log (actor_id,action,target,created_at) VALUES (?,?,?,?)",
+                           (uid,"edit-role-requirements",role,int(time.time())))
             elif route == "/api/admin/resources":
                 role = db.execute("SELECT role FROM users WHERE id=?", (uid,)).fetchone()
                 if role["role"] != "admin":
@@ -285,7 +351,7 @@ class API(BaseHTTPRequestHandler):
                 name = str(data.get("name", "")).strip()
                 interests = str(data.get("interests", "")).strip()
                 goal = str(data.get("goal", ""))
-                if not 1 <= len(name) <= 80 or len(interests) > 300 or goal not in CAREER_PATHS:
+                if not 1 <= len(name) <= 80 or len(interests) > 300 or goal not in career_catalog(db):
                     return self.send_json(400, {"error": "Enter a name and valid career goal"})
                 db.execute("UPDATE users SET name=?,interests=?,goal=? WHERE id=?", (name,interests,goal,uid))
             elif route == "/api/skills":
