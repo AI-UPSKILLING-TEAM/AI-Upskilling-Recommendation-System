@@ -10,7 +10,7 @@ from pypdf import PdfReader
 source = Path("SRS_Project_ID_22.pdf")
 reader = PdfReader(str(source))
 budget = 42000
-pattern = re.compile(r"functional|non.functional|requirement|use.case|constraint|performance|security|architecture|role|user.story", re.I)
+pattern = re.compile(r"functional|non.functional|requirement|use.case|constraint|performance|security|architecture|role|user.story|recommendation|learning|resource|progress|dashboard|course|certification|FR-|NFR-", re.I)
 print("SRS pages:", len(reader.pages))
 for number, page in enumerate(reader.pages, 1):
     raw = page.extract_text() or ""
