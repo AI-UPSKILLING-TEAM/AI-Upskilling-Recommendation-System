@@ -13,7 +13,7 @@ import sqlite3
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, urlsplit
-from recommendations import rank_learning, resource_catalog
+from recommendations import rank_learning, resource_catalog, certificates_for
 
 ROOT = Path(__file__).resolve().parent
 DB_PATH = Path(os.getenv("UPSKILL_DB", str(ROOT / "upskill.db")))
@@ -139,6 +139,7 @@ def gap_report(goal, existing, interests='', career_paths=None):
         "missing_skills": missing,
         "readiness_percent": round(100 * (len(required) - len(missing)) / len(required)) if required else 0,
         "recommendations": rank_learning(missing, goal, interests),
+        "certifications": certificates_for(goal),
         "method": "TF-IDF content ranking over curated resources (not a trained predictive model)",
     }
 
