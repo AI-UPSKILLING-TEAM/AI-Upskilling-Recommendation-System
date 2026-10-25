@@ -13,7 +13,7 @@ async function request(route, method='GET', body=null) {
   return data;
 }
 function formData(form) { return Object.fromEntries(new FormData(form)); }
-async function handle(action) { try { await action(); say('Saved successfully.'); } catch(error) { say(error.message); } }
+async function handle(action, success='Saved successfully.') { try { await action(); say(success); } catch(error) { say(error.message); } }
 function makeText(parent, tag, text, className='') { const el = document.createElement(tag); el.textContent = text; if(className) el.className=className; parent.append(el); return el; }
 function render() {
   $('auth').hidden = true; $('dashboard').hidden = false;
@@ -35,7 +35,7 @@ function render() {
   else a.missing_skills.forEach(s=>makeText(gaps,'span',s,'tag'));
   const list=$('recommendations');list.replaceChildren();
   if(!a.recommendations.length) makeText(list,'p','No missing skills for the selected career goal.');
-  for(const item of a.recommendations){const row=document.createElement('div');row.className='recommendation';makeText(row,'strong',item.skill);makeText(row,'div',item.resource);makeText(row,'small',item.activity);list.append(row);}
+  for(const item of a.recommendations){const row=document.createElement('div');row.className='recommendation';makeText(row,'strong',item.skill);const link=document.createElement('a');link.textContent=item.resource;link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';row.append(link);makeText(row,'small',item.activity);list.append(row);}
   const progress=$('progress');progress.replaceChildren();
   for(const item of a.recommendations){
     const wrap=document.createElement('div');wrap.className='progress-item';
@@ -44,10 +44,30 @@ function render() {
     label.append(input,document.createTextNode(`Practiced ${item.skill}`));wrap.append(label);progress.append(wrap);
   }
 }
-async function refresh() { dashboard=await request('/api/dashboard'); render(); }
+async function showNotifications() {
+  const data=await request('/api/notifications');
+  $('notifications-enabled').checked=data.enabled;
+  const pane=$('notifications-list');pane.replaceChildren();
+  if(!data.items.length) makeText(pane,'p','No milestones logged yet.','muted');
+  for(const item of data.items) {
+    const row=document.createElement('div');row.className='progress-item';
+    makeText(row,'span',item.title);if(!item.read_at) {
+      const button=document.createElement('button');button.className='mini secondary';button.textContent='Mark read';
+      button.addEventListener('click',()=>handle(async()=>{await request('/api/notifications/read','POST',{id:item.id});await showNotifications();}));
+      row.append(button);
+    } pane.append(row);
+  }
+  $('admin-card').hidden = dashboard.profile.role !== 'admin';
+  if(dashboard.profile.role === 'admin') {
+    const students=await request('/api/admin/users');
+    $('admin-summary').textContent=students.users.length+' registered learner accounts';
+  }
+}
+async function refresh() { dashboard=await request('/api/dashboard'); render(); await showNotifications(); }
 async function load(){
   catalog=await request('/api/catalog'); const select=$('career-goal');
   for (const goal of Object.keys(catalog.career_paths)) {const option=document.createElement('option');option.value=goal;option.textContent=goal;select.append(option);}
+  for (const skill of catalog.skills){const option=document.createElement('option');option.value=skill;option.textContent=skill;$('resource-skill').append(option);}
   if(token) {try{await refresh();}catch(error){token='';sessionStorage.removeItem('skillpath_token');say('Session expired. Please sign in.');}}
 }
 $('register-form').addEventListener('submit', event=>{event.preventDefault();handle(async()=>{await request('/api/register','POST',formData(event.target));event.target.reset();say('Account created. Sign in to continue.');});});
@@ -56,3 +76,12 @@ $('profile-form').addEventListener('submit',event=>{event.preventDefault();handl
 $('skills-form').addEventListener('submit',event=>{event.preventDefault();handle(async()=>{const skills=[...event.target.querySelectorAll('input:checked')].map(x=>x.value);await request('/api/skills','POST',{skills});await refresh();});});
 $('logout').addEventListener('click',()=>handle(async()=>{await request('/api/logout','POST',{});token='';sessionStorage.removeItem('skillpath_token');$('dashboard').hidden=true;$('auth').hidden=false;say('Signed out.');}));
 load().catch(e=>say(`Unable to load app: ${e.message}`));
+
+$('notifications-enabled').addEventListener('change',event=>handle(async()=>{
+  await request('/api/notifications/preferences','POST',{enabled:event.target.checked});
+  await showNotifications();
+}));
+$('admin-resource-form').addEventListener('submit',event=>{event.preventDefault();handle(async()=>{
+  await request('/api/admin/resources','POST',formData(event.target));
+  event.target.reset();await refresh();
+},'Learning resource added.');});
