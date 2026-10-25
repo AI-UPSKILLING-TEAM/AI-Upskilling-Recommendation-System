@@ -1,0 +1,214 @@
+{
+  "method": "TF-IDF cosine similarity",
+  "dataset": "12 author-defined synthetic reference cases, one relevant topic per case",
+  "limitations": "Small, catalog-derived, non-independent reference set. No real-user efficacy or predictive accuracy claim.",
+  "cases": [
+    {
+      "goal": "Data Analyst",
+      "interests": "sql relational databases querying",
+      "relevant": [
+        "SQL"
+      ],
+      "ranking": [
+        "SQL",
+        "Data Visualization",
+        "Statistics",
+        "Python",
+        "Excel"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 0.5,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Data Analyst",
+      "interests": "excel spreadsheets budget workbook",
+      "relevant": [
+        "Excel"
+      ],
+      "ranking": [
+        "Excel",
+        "Data Visualization",
+        "Statistics",
+        "Python",
+        "SQL"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 0.3333333333333333,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Data Scientist",
+      "interests": "machine learning artificial intelligence",
+      "relevant": [
+        "Machine Learning"
+      ],
+      "ranking": [
+        "Machine Learning",
+        "Statistics",
+        "Data Visualization",
+        "Python",
+        "SQL"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 0.25,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Data Scientist",
+      "interests": "statistics probability data analysis",
+      "relevant": [
+        "Statistics"
+      ],
+      "ranking": [
+        "Statistics",
+        "Python",
+        "Data Visualization",
+        "SQL",
+        "Machine Learning"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 0.3333333333333333,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Web Developer",
+      "interests": "html markup accessible websites",
+      "relevant": [
+        "HTML"
+      ],
+      "ranking": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "APIs",
+        "Git"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 1.0,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Web Developer",
+      "interests": "css styling frontend",
+      "relevant": [
+        "CSS"
+      ],
+      "ranking": [
+        "CSS",
+        "JavaScript",
+        "HTML",
+        "APIs",
+        "Git"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 0.5,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Backend Developer",
+      "interests": "automated unit testing software quality",
+      "relevant": [
+        "Testing"
+      ],
+      "ranking": [
+        "Testing",
+        "Python",
+        "APIs",
+        "Git",
+        "SQL"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 0.2,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Backend Developer",
+      "interests": "relational sql databases queries",
+      "relevant": [
+        "SQL"
+      ],
+      "ranking": [
+        "SQL",
+        "Python",
+        "APIs",
+        "Git",
+        "Testing"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 0.5,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Cloud Engineer",
+      "interests": "linux shell commands operations",
+      "relevant": [
+        "Linux"
+      ],
+      "ranking": [
+        "Linux",
+        "Cloud Fundamentals",
+        "Networking",
+        "Python",
+        "Git"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 1.0,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Cloud Engineer",
+      "interests": "cloud fundamentals computing architecture",
+      "relevant": [
+        "Cloud Fundamentals"
+      ],
+      "ranking": [
+        "Cloud Fundamentals",
+        "Linux",
+        "Networking",
+        "Python",
+        "Git"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 0.25,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Cybersecurity Analyst",
+      "interests": "networking protocols infrastructure",
+      "relevant": [
+        "Networking"
+      ],
+      "ranking": [
+        "Networking",
+        "Security Fundamentals",
+        "Linux",
+        "Python",
+        "Git"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 1.0,
+      "hit_at_3": 1
+    },
+    {
+      "goal": "Cybersecurity Analyst",
+      "interests": "cybersecurity vulnerability web protection",
+      "relevant": [
+        "Security Fundamentals"
+      ],
+      "ranking": [
+        "Security Fundamentals",
+        "Networking",
+        "Linux",
+        "Python",
+        "Git"
+      ],
+      "reciprocal_rank": 1.0,
+      "baseline_reciprocal_rank": 0.25,
+      "hit_at_3": 1
+    }
+  ],
+  "mean_reciprocal_rank": 1.0,
+  "fixed_order_baseline_mrr": 0.5097,
+  "hit_rate_at_3": 1.0
+}

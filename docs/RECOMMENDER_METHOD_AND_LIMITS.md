@@ -1,23 +1,10 @@
-# Recommendation design and evaluation limitations
+# Recommendation Method and Evaluation Limits
+The SRS permits appropriate training or reference data. This system uses curated reference data and TF-IDF cosine similarity: a content-based recommendation method. No trained predictor, external LLM or student-outcome model is claimed.
 
-The previous baseline recommended every missing skill in fixed role order. The current implementation performs **TF-IDF + cosine content-based ranking** over a small curated corpus of descriptions of learning resources.
+Candidates are missing/weak skills for the chosen career goal. Documents combine skill and course descriptions; query context combines goal, interests and portfolio titles. Natural-log term frequency and smoothed IDF produce vectors; cosine similarity ranks them, with deterministic source-order ties. Practiced topics sort later without implying mastery. A custom skill without a course still receives an original practice-project prompt; an administrator can add a course URL.
 
-## Inputs and output
-Inputs: student-provided career goal, interests, self-reported existing skill inventory, and a fixed role-to-required-skill mapping. Missing skills are derived by set difference. Candidate learning materials are associated with those missing skills. The query string (career + interests) and resource text are tokenized, transformed into TF-IDF vectors, and ranked by cosine score with original skill order as a stable tie-breaker.
+The seeded catalog has 16 skills and six roles. Three supported role-specific credential references are optional; pricing and eligibility are not assessed. All 19 reference links are checked in evidence/link-audit.json. Project prompts are small original exercises, not accredited assignments.
 
-Outputs: readiness fraction; missing skills; ranked recommendations with skill, resource title, HTTPS URL, type, relevance score, and a short project activity; separate practice-progress percentage and unpracticed-first display.
+Evaluation uses 12 author-defined synthetic cases, two per role, one relevant skill per case. The full reference set, expected topic and observed ranking are retained in evidence/recommender-evaluation.json. Mean reciprocal rank is the mean inverse rank of the first relevant result. Hit@3 is the share of cases with that result in the first three. Fixed catalog order is the baseline. Current MRR is 1.0000 versus 0.5097 for fixed order; hit@3 is 1.0000.
 
-## What is and is not AI
-TF-IDF/cosine is a classical information retrieval and content-based recommendation approach. It does **not** learn from historical student engagement data, does not train neural networks, and does not establish prediction accuracy or educational effectiveness. Do not present it as a trained machine-learning model.
-
-## Reproducible technical checks
-- `python -m unittest discover -s tests -v`: checks deterministic ranking, supported HTTPS links, skill coverage, and authorization.
-- Compare outputs with the original static-order rule as a baseline; this is a *technical*, not educational outcome, comparison.
-- For a defensible recommender evaluation, obtain consented/anonymized relevance judgments and compute Precision@K, Recall@K, NDCG@K and coverage. No such dataset or metrics are claimed for this submission.
-
-## Limitations
-- Small hand-written corpus; vocabulary and role requirements may be incomplete.
-- Content cosine relevance is not skill mastery or placement suitability.
-- Course availability and certificate criteria may change.
-- Admin-added resources override the displayed resource link for a skill, but are not used in the TF-IDF candidate corpus.
-- Real ML training, fairness checks, online feedback and validation remain future work.
+These small, non-independent, catalog-derived cases are a reproducibility check, not 100% real-world accuracy. Independent evaluation needs diverse student descriptions, teacher/student relevance judgments, a frozen held-out dataset and learning-outcome follow-up. Readiness is a self-reported checklist, not an academic or employment eligibility decision.

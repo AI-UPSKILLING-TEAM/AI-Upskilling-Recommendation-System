@@ -7,3 +7,5 @@
 .mini{font-size:.8rem;padding:.3rem .6rem;margin-left:auto}
 #notifications-list .progress-item{display:flex;align-items:center;gap:.55rem;justify-content:space-between}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important}}
+
+header nav a{color:#e4edff;margin-left:1rem;text-underline-offset:4px}.skill-row{display:grid;gap:.3rem;padding:.4rem;border:1px solid var(--line);border-radius:.5rem}.skill-row select{padding:.35rem;font-size:.83rem}.management-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;padding:.6rem 0;border-bottom:1px solid var(--line)}.management-row span{flex:1;min-width:130px}.student-form{border-top:1px solid var(--line);padding:1rem 0}.inline-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;align-items:end}#admin-card{grid-column:1/-1}a:focus-visible{outline:3px solid #2563eb;outline-offset:3px}small{line-height:1.6}hr{border:0;border-top:1px solid var(--line);margin:1.5rem 0}

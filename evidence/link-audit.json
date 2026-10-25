@@ -1,0 +1,135 @@
+[
+  {
+    "title": "Python official tutorial",
+    "url": "https://docs.python.org/3/tutorial/",
+    "status": 200,
+    "final_url": "https://docs.python.org/3/tutorial/",
+    "result": "reachable"
+  },
+  {
+    "title": "Microsoft Learn: Introduction to Transact-SQL",
+    "url": "https://learn.microsoft.com/en-us/training/modules/introduction-to-transact-sql/",
+    "status": 200,
+    "final_url": "https://learn.microsoft.com/en-us/training/modules/introduction-to-transact-sql/",
+    "result": "reachable"
+  },
+  {
+    "title": "Microsoft Excel training",
+    "url": "https://support.microsoft.com/en-us/excel",
+    "status": 200,
+    "final_url": "https://support.microsoft.com/en-us/excel/",
+    "result": "reachable"
+  },
+  {
+    "title": "Khan Academy: Statistics and probability",
+    "url": "https://www.khanacademy.org/math/statistics-probability",
+    "status": 200,
+    "final_url": "https://www.khanacademy.org/math/statistics-probability",
+    "result": "reachable"
+  },
+  {
+    "title": "Matplotlib tutorials",
+    "url": "https://matplotlib.org/stable/tutorials/index.html",
+    "status": 200,
+    "final_url": "https://matplotlib.org/stable/tutorials/index.html",
+    "result": "reachable"
+  },
+  {
+    "title": "Google Machine Learning Crash Course",
+    "url": "https://developers.google.com/machine-learning/crash-course",
+    "status": 200,
+    "final_url": "https://developers.google.com/machine-learning/crash-course",
+    "result": "reachable"
+  },
+  {
+    "title": "MDN: Learn web development",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development",
+    "status": 200,
+    "final_url": "https://developer.mozilla.org/en-US/docs/Learn_web_development",
+    "result": "reachable"
+  },
+  {
+    "title": "MDN: CSS styling basics",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics",
+    "status": 200,
+    "final_url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics",
+    "result": "reachable"
+  },
+  {
+    "title": "MDN: JavaScript",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+    "status": 200,
+    "final_url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+    "result": "reachable"
+  },
+  {
+    "title": "Pro Git book",
+    "url": "https://git-scm.com/book/en/v2",
+    "status": 200,
+    "final_url": "https://git-scm.com/book/en/v2",
+    "result": "reachable"
+  },
+  {
+    "title": "MDN: Web APIs",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/API",
+    "status": 200,
+    "final_url": "https://developer.mozilla.org/en-US/docs/Web/API",
+    "result": "reachable"
+  },
+  {
+    "title": "Python unittest documentation",
+    "url": "https://docs.python.org/3/library/unittest.html",
+    "status": 200,
+    "final_url": "https://docs.python.org/3/library/unittest.html",
+    "result": "reachable"
+  },
+  {
+    "title": "Ubuntu command-line introduction",
+    "url": "https://ubuntu.com/tutorials/command-line-for-beginners",
+    "status": 200,
+    "final_url": "https://ubuntu.com/tutorials/command-line-for-beginners",
+    "result": "reachable"
+  },
+  {
+    "title": "Cloudflare: Learning center",
+    "url": "https://www.cloudflare.com/learning/",
+    "status": 200,
+    "final_url": "https://www.cloudflare.com/learning/",
+    "result": "reachable"
+  },
+  {
+    "title": "Microsoft Learn: Azure fundamentals",
+    "url": "https://learn.microsoft.com/en-us/training/paths/microsoft-azure-fundamentals-describe-cloud-concepts/",
+    "status": 200,
+    "final_url": "https://learn.microsoft.com/en-us/training/paths/microsoft-azure-fundamentals-describe-cloud-concepts/",
+    "result": "reachable"
+  },
+  {
+    "title": "OWASP Top 10",
+    "url": "https://owasp.org/www-project-top-ten/",
+    "status": 200,
+    "final_url": "https://owasp.org/projects/top-ten",
+    "result": "reachable"
+  },
+  {
+    "title": "Microsoft Certified: Power BI Data Analyst Associate",
+    "url": "https://learn.microsoft.com/en-us/credentials/certifications/data-analyst-associate/",
+    "status": 200,
+    "final_url": "https://learn.microsoft.com/en-us/credentials/certifications/data-analyst-associate/",
+    "result": "reachable"
+  },
+  {
+    "title": "AWS Certified Cloud Practitioner",
+    "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/",
+    "status": 200,
+    "final_url": "https://aws.amazon.com/certification/certified-cloud-practitioner/",
+    "result": "reachable"
+  },
+  {
+    "title": "ISC2 Certified in Cybersecurity (CC)",
+    "url": "https://www.isc2.org/Certifications",
+    "status": 200,
+    "final_url": "https://www.isc2.org/Certifications",
+    "result": "reachable"
+  }
+]

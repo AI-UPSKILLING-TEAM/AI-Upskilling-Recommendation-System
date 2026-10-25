@@ -46,7 +46,7 @@ PROJECT_IDEAS = {
     "Security Fundamentals": "Threat-model a sample web app and document mitigations.",
 }
 
-# Provider pages verified 25 October 2026. Eligibility, prices and versions can change.
+# Official provider references; current availability is recorded by scripts/audit_links.py.
 CERTIFICATION_OPTIONS = {
     "Data Analyst": {"title": "Microsoft Certified: Power BI Data Analyst Associate",
                      "url": "https://learn.microsoft.com/en-us/credentials/certifications/data-analyst-associate/",
@@ -69,9 +69,13 @@ def words(value):
     return re.findall(r"[a-z0-9]+", value.lower())
 
 
-def rank_learning(missing, goal, interests=""):
+def rank_learning(missing, goal, interests="", custom=None):
     """Rank missing skills against the student's stated interests and goal."""
-    items = [(skill, CATALOG[skill]) for skill in missing if skill in CATALOG]
+    catalog = dict(CATALOG)
+    for row in custom or []:
+        catalog[row["skill"]] = (row["title"], row["url"], row.get("kind", "course"),
+                                 row["skill"] + " " + row.get("description", ""))
+    items = [(skill, catalog.get(skill, ("Practice " + skill, "", "project", skill + " " + goal))) for skill in missing]
     if not items:
         return []
     documents = [words(skill + " " + data[3]) for skill, data in items]

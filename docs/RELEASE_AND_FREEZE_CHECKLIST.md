@@ -1,19 +1,15 @@
-# Project 22 release and development freeze checklist
+# Release Candidate and Development Freeze
+Candidate prepared 25 October 2026. This record is not independent approval or a claim that the scheduled Sprint 2 has elapsed.
 
-**Do not freeze before the 26–30 October Sprint 2 acceptance process is completed.**
+## Prepared candidate
+Application, API/security regressions, browser/mobile checks, automated accessibility, recommendation reference evaluation, URL audit and local performance evidence are included. New SAD, Test Plan, manual, traceability, deviations and genuine browser recordings are included. Databases, credentials and session tokens are excluded from source publication.
 
-- [x] Student MVP implemented on a feature branch.
-- [x] Sprint 2 prototype functions committed.
-- [x] Python GitHub Actions tests passed on 25 October.
-- [ ] Verify all original SRS functional/nonfunctional requirements.
-- [ ] Check alignment with original SAD and Test Plan.
-- [ ] Complete peer review and merge PR #17 (owner action).
-- [ ] Run human acceptance testing on merged `main`.
-- [ ] Upload genuine 1-minute Sprint 1 demo with date and presenter.
-- [ ] Upload genuine 2-minute Sprint 2 demo with date and presenter.
-- [ ] Create/link GitHub Project and confirm story points, assignees and sprint fields.
-- [ ] Resolve known gaps, record accepted deviations and close accepted issues.
-- [ ] Confirm reviewer approval, create release tag, record its immutable SHA.
-- [ ] Declare development freeze only after team approval.
+## Real team acceptance required
+- An authorized teammate other than the author reviews PR #17 and records genuine feedback/approval.
+- Repository owner merges after current CI passes.
+- Team accepts the new design/test documents and documented implementation decisions.
+- Actual Sprint-2 acceptance occurs during/after 26-30 October; refresh the final recording if required by the instructor.
+- Owner records accepted release commit/tag, reviewer and freeze date.
 
-**Freeze record:** Not yet declared. Release version/SHA: pending.
+## Freeze procedure
+After approval and merge, create an annotated release tag for the accepted commit, record the tag/SHA, stop feature changes to the release baseline, and allow only documented critical fixes through reviewed PRs. Retain source, tests, documentation and videos. No tag, approval or freeze date is invented here.

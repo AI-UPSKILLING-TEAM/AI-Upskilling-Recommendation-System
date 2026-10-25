@@ -2,7 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
-import sqlite3
+from app import connect_db
 import tempfile
 import threading
 import unittest
@@ -43,7 +43,7 @@ class NonFunctionalTests(unittest.TestCase):
     def test_password_is_salted_and_never_stored_in_plaintext(self):
         status,_,_=self.call("/api/register",{"name":"Security Test","email":"test@example.com","password":"securepass2026"})
         self.assertEqual(status,201)
-        with sqlite3.connect(self.db) as db:
+        with connect_db(self.db) as db:
             row=db.execute("SELECT salt,password_hash FROM users").fetchone()
         self.assertNotEqual(row[1],"securepass2026")
         self.assertEqual(len(row[0]),32)
@@ -67,7 +67,7 @@ class NonFunctionalTests(unittest.TestCase):
         token=json.loads(body)["token"]
         self.assertEqual(self.call("/api/dashboard",token=token)[0],200)
         hashed=hashlib.sha256(token.encode()).hexdigest()
-        with sqlite3.connect(self.db) as db:
+        with connect_db(self.db) as db:
             db.execute("UPDATE sessions SET expires_at=1 WHERE token_hash=?",(hashed,))
             db.commit()
         self.assertEqual(self.call("/api/dashboard",token=token)[0],401)

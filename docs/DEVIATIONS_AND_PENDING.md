@@ -1,23 +1,19 @@
-# Deviations and Remaining Part-2 Deliverables
+# Design Decisions, Deviations and Process Status
+Candidate prepared 25 October 2026. No work, commit, recording or approval is backdated.
 
-**Review date:** 25 October 2026. This records prototype status and outstanding tasks; it is not a statement that Sprint 1 was completed during 19–23 October.
+## Implemented
+Authentication, academic profile, skill/proficiency management, goal selection, missing/weak gap analysis, content-based learning recommendations, courses/resources, practical project prompts, optional certification references, private portfolio, persistent practice progress, dashboard, notifications and administrator management are implemented and tested. See TEST_EVIDENCE.md.
 
-| Area | Verified implementation | Still necessary |
-|---|---|---|
-| Skill-gap analysis | Compares selected skill names to role-skill requirements | Weak-skill proficiency model (SRS FR-16) |
-| AI recommendations | Transparent TF-IDF cosine content ranking from small curated descriptions | Model or method evaluation on relevance judgments; expand and review the limited concrete project ideas and official certification options (FR-18–FR-22) |
-| Learning resources | Per-skill official learning links and admin addition | Comprehensive link/relevance checks; admin resource edit/delete (FR-37) |
-| Student profile | Name, email, goals, interests, courses/projects/certifications | SRS academic data fields and additional validation (FR-07) |
-| Practice progress | Persisted activity checkboxes, practice completion percentage, unfinished-first ordering | Progress assessment beyond practice flags; validation with SRS Test Plan |
-| Notifications | Opt-in in-app milestones | No email/SMS/push; if required by submitted SAD, document deviation |
-| Administrator | Role-protected list, resource additions, editable role requirements | Full student management and skill-catalog editing (FR-34, FR-35) |
-| Security | Salted PBKDF2 password hashing, expiring token, per-user queries, basic role checks | HTTPS deployment, throttling, recovery, security/privacy review |
-| CI tests | Python tests and JS syntax/DOM contract checks | Manual responsive accessibility testing, measured performance/recovery |
-| SRS alignment | FR-01–FR-38 and NFR-01–NFR-10 mapped in traceability draft | Original SAD/Test Plan unavailable in repo; exact design/test compliance requires reviewer |
-| GitHub Project board | 16 tracked GitHub issues | Create/link board, story-point and sprint fields; agree assignees |
-| Sprint 1 demo | Recording guide is prepared | Genuine one-minute video recorded and uploaded by team |
-| Sprint 2 demo | Recording guide is prepared | Genuine two-minute video recorded and uploaded by team |
-| Pull request | PR #17 open under ManishS943 | Owner/teammate review and merge |
-| Development freeze | Release checklist prepared | Only after Sprint 2 review and release approval |
+## Explicit decisions
+1. TF-IDF uses curated reference data, as permitted by the SRS constraint. It is not a learned predictor.
+2. Readiness compares self-reported skill levels with role targets. Progress is binary skill-based practice completion; neither proves mastery.
+3. Course/project/certification records share a typed portfolio table. Student/admin accounts share role-based users. Recommendations retain a latest JSON snapshot.
+4. Some optional metadata in the conceptual SRS ER diagram (provider, difficulty, issue date and project link) is not separately modeled. Normative FR behavior uses title, type, related skill and resource descriptions.
+5. Admin-created courses/resources can be edited/deleted; version-controlled reference entries remain fallbacks. Latest custom resource per skill overrides its default.
+6. Notifications are in-app. The SRS does not require email/SMS/push delivery.
+7. SAD and Test Plan were newly created with user authorization because the earlier originals were unavailable. Equivalence to prior submissions cannot be verified.
 
-There is no evidence of a completed sprint review or recorded videos yet. Do not backdate commits, fake outcomes, or close work before acceptance.
+## Genuine team/process actions
+Sprint 1 was scheduled 19-23 October; current recovery work is dated 25 October. Sprint 2 is scheduled 26-30 October, so the two-minute recording prepared now is an implementation preview. Another authorized teammate must review the actual PR; an owner must merge after current checks pass. Teammates must raise their own contribution PRs for work they actually do. Current assignments allocate review/demo responsibility and do not manufacture contribution history. Formal freeze requires real acceptance and an owner-recorded final commit/date.
+
+The application and review package are prepared; independent review, merge, in-period Sprint-2 acceptance and formal freeze remain visible process actions. See RELEASE_AND_FREEZE_CHECKLIST.md.

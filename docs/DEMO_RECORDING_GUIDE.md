@@ -1,30 +1,11 @@
-# Genuine demo-video recording instructions
+# Demonstration Recordings and Speaking Guide
+Recordings are genuine automated browser captures of the running local product using disposable accounts. They were prepared on 25 October 2026. Sprint 1 is recovery evidence; Sprint 2 is an early implementation preview, because its scheduled week is 26-30 October.
 
-These are **recording plans**, not evidence that either required video exists. Videos must show the live running application; do not submit slides or fabricated footage instead.
+## One-minute Sprint 1 demo
+evidence/videos/Sprint_1_Demo.mp4: 0-12s app/register/login; 12-28s academic profile, career goal and skills; 28-39s gaps and learning cards; 39-51s practice and notification; 51-60s reload/persistence. Explain what is saved, why topics are recommended and why practice differs from proficiency.
 
-## Setup for both demos
-1. Install Python 3.10+; run `python app.py` in repository root.
-2. Open http://127.0.0.1:8000 on the recording computer. Use a demo-only email and password; do not display real passwords.
-3. Use screen recording (Windows Snipping Tool/OBS, macOS QuickTime, or another recorder).
-4. Capture screen continuously, narrate actual results, and confirm the file plays.
-5. Do not enter production credentials or personal student data. Do not claim Sprint 1 work occurred in its original week if recorded later.
+## Two-minute Sprint 2 preview
+evidence/videos/Sprint_2_Preview.mp4: 0-28s student login, Cloud Engineer goal and weak proficiency; 28-49s gaps, projects and portfolio; 49-70s progress, notifications and reload; 70-102s administrator course/role management; 102-111s audit events; 111-120s updated path. Captions identify the workflow and preview status. No real credentials appear.
 
-## Sprint 1 – about 60 seconds
-- **0:00–0:08**: Introduce Project 22, AI-Powered Upskilling Recommendation System.
-- **0:08–0:23**: Create demo account and log in.
-- **0:23–0:35**: Set career goal and interests.
-- **0:35–0:45**: Select skills and save.
-- **0:45–1:00**: Point out readiness percentage, missing skills, and study suggestions.
-- Suggested output: `demos/sprint1_demo.mp4` (add actual file only).
-
-## Sprint 2 – about 120 seconds
-- **0:00–0:12**: Explain the updated working product and local prototype scope.
-- **0:12–0:38**: Log in, choose a career goal, update skills.
-- **0:38–1:03**: Show ranked resources, click through to a genuine provider URL.
-- **1:03–1:25**: Opt in to notifications, mark a skill practiced, show milestone.
-- **1:25–1:43**: Refresh page; verify saved practice and notification state.
-- **1:43–2:00**: Briefly show GitHub Actions tests / mention admin permission checks. Do not expose account data.
-- Suggested output: `demos/sprint2_demo.mp4` (add actual file only).
-
-## Upload and audit
-Push real MP4 files to GitHub, commit using actual uploader account and date, add links to PR/issue #6 and #16. If videos exceed GitHub file limits, use Git LFS or institutional storage and include a link in repository. Record the demo duration, device, date and presenter in the submission notes.
+## Final live demonstration
+Start from a fresh folder, register a student, save academics/goal/levels, show missing and weak skills, add a portfolio item, complete/undo practice and refresh. Demonstrate admin authorization and management. Present the new SAD/Test Plan, traceability, actual test evidence, synthetic-ranking limitations, project board and PR checks. Explain deviations. Rerecord the final Sprint-2 outcome after genuine sprint acceptance if required.

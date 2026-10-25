@@ -1,7 +1,7 @@
 """Dependency-free educational prototype for project 22.
 
 Sprints: authentication, profile, skills, goals, gap analysis and a learning dashboard.
-The recommendation ranking is rules-based, not a trained AI model.
+Content-based TF-IDF ranking uses curated reference data; no external AI service is needed.
 """
 import hashlib
 import json
@@ -11,9 +11,11 @@ import re
 import secrets
 import sqlite3
 import time
+from contextlib import contextmanager
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, urlsplit
 from recommendations import rank_learning, resource_catalog, certificates_for
+from administration import execute as administer, skill_names, ValidationError
 
 ROOT = Path(__file__).resolve().parent
 DB_PATH = Path(os.getenv("UPSKILL_DB", str(ROOT / "upskill.db")))
@@ -29,11 +31,16 @@ CAREER_PATHS = {
 ALL_SKILLS = sorted({skill for skills in CAREER_PATHS.values() for skill in skills})
 
 
+@contextmanager
 def connect_db(db_path=None):
     connection = sqlite3.connect(str(db_path or DB_PATH), timeout=5)
     connection.row_factory = sqlite3.Row
     connection.execute("PRAGMA foreign_keys = ON")
-    return connection
+    try:
+        with connection:
+            yield connection
+    finally:
+        connection.close()
 
 
 def initialize(db_path=None):
@@ -110,6 +117,25 @@ def initialize(db_path=None):
                 PRIMARY KEY (role,skill)
             );
         """)
+        # Additive migrations preserve previously registered users and progress.
+        migrations = {
+            "users": {"department": "TEXT NOT NULL DEFAULT ''", "academic_year": "TEXT NOT NULL DEFAULT ''",
+                      "phone": "TEXT NOT NULL DEFAULT ''"},
+            "skills": {"level": "INTEGER NOT NULL DEFAULT 2"},
+            "career_role_skills": {"required_level": "INTEGER NOT NULL DEFAULT 2"},
+            "learning_resources": {"kind": "TEXT NOT NULL DEFAULT 'course'"},
+        }
+        for table, columns in migrations.items():
+            existing = {r["name"] for r in db.execute("PRAGMA table_info(" + table + ")")}
+            for column, declaration in columns.items():
+                if column not in existing:
+                    db.execute("ALTER TABLE " + table + " ADD COLUMN " + column + " " + declaration)
+        seeded = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='skill_catalog'").fetchone()
+        db.execute("CREATE TABLE IF NOT EXISTS skill_catalog(name TEXT PRIMARY KEY)")
+        if not seeded:
+            db.executemany("INSERT OR IGNORE INTO skill_catalog(name) VALUES (?)", [(s,) for s in ALL_SKILLS])
+        db.execute("CREATE TABLE IF NOT EXISTS recommendation_snapshots (user_id INTEGER PRIMARY KEY "
+                   "REFERENCES users(id) ON DELETE CASCADE, payload TEXT NOT NULL, updated_at INTEGER NOT NULL)")
         if not db.execute("SELECT 1 FROM career_roles LIMIT 1").fetchone():
             for role, skills in CAREER_PATHS.items():
                 db.execute("INSERT INTO career_roles (name) VALUES (?)", (role,))
@@ -128,19 +154,25 @@ def password_digest(password, salt):
     return hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), bytes.fromhex(salt), 300_000).hex()
 
 
-def gap_report(goal, existing, interests='', career_paths=None):
+def gap_report(goal, existing, interests='', career_paths=None, levels=None, required_levels=None, custom=None):
     required = (CAREER_PATHS if career_paths is None else career_paths).get(goal, [])
     present = set(existing)
-    missing = [skill for skill in required if skill not in present]
+    levels = levels or {s: 2 for s in present}
+    expected = required_levels or {s: 2 for s in required}
+    missing = [s for s in required if s not in present]
+    weak = [s for s in required if s in present and levels.get(s, 2) < expected.get(s, 2)]
+    gaps = [s for s in required if s in missing or s in weak]
+    matching = [s for s in required if s not in gaps]
+    suggestions = rank_learning(gaps, goal, interests, custom)
+    for row in suggestions:
+        row["reason"] = ("Missing skill" if row["skill"] in missing else "Below target proficiency") + " for " + goal
+        row["required_level"] = expected.get(row["skill"], 2)
     return {
-        "career_goal": goal,
-        "required_skills": required,
-        "matching_skills": [s for s in required if s in present],
-        "missing_skills": missing,
-        "readiness_percent": round(100 * (len(required) - len(missing)) / len(required)) if required else 0,
-        "recommendations": rank_learning(missing, goal, interests),
-        "certifications": certificates_for(goal),
-        "method": "TF-IDF content ranking over curated resources (not a trained predictive model)",
+        "career_goal": goal, "required_skills": required, "matching_skills": matching,
+        "missing_skills": missing, "weak_skills": weak, "gap_skills": gaps,
+        "required_levels": expected, "readiness_percent": round(100 * len(matching) / len(required)) if required else 0,
+        "recommendations": suggestions, "certifications": certificates_for(goal) if gaps else [],
+        "method": "TF-IDF content-based ranking over curated reference data",
     }
 
 
@@ -210,24 +242,31 @@ class API(BaseHTTPRequestHandler):
         if route == "/api/catalog":
             with connect_db(self.db_path) as db:
                 paths = career_catalog(db)
-            return self.send_json(200, {"career_paths": paths, "skills": ALL_SKILLS})
+                levels = {role: {r["skill"]: r["required_level"] for r in db.execute(
+                    "SELECT skill,required_level FROM career_role_skills WHERE role=?", (role,))} for role in paths}
+                names = skill_names(db)
+            return self.send_json(200, {"career_paths": paths, "skills": names, "required_levels": levels})
         if route == "/api/resources":
             with connect_db(self.db_path) as db:
                 custom = [dict(row) for row in db.execute(
-                    "SELECT id,skill,title,url,description FROM learning_resources ORDER BY id")]
+                    "SELECT id,skill,title,url,description,kind FROM learning_resources ORDER BY id")]
             return self.send_json(200, {"curated": resource_catalog(), "custom": custom})
         with connect_db(self.db_path) as db:
             uid = self.user_id(db)
             if not uid:
                 return self.send_json(401, {"error": "Sign in first"})
             if route == "/api/dashboard":
-                user = db.execute("SELECT id, name, email, interests, goal, role FROM users WHERE id=?", (uid,)).fetchone()
+                user = db.execute("SELECT id, name, email, interests, goal, role, department, academic_year, phone FROM users WHERE id=?", (uid,)).fetchone()
                 skills = [r["skill"] for r in db.execute("SELECT skill FROM skills WHERE user_id=? ORDER BY skill", (uid,))]
                 completed = [r["skill"] for r in db.execute("SELECT skill FROM progress WHERE user_id=? ORDER BY skill", (uid,))]
                 portfolio = [dict(row) for row in db.execute(
                     "SELECT id,kind,title,skill FROM portfolio WHERE user_id=? ORDER BY id", (uid,))]
                 background = user["interests"] + " " + " ".join(item["title"] for item in portfolio)
-                analysis = gap_report(user["goal"], skills, background, career_catalog(db))
+                levels = {r["skill"]: r["level"] for r in db.execute("SELECT skill,level FROM skills WHERE user_id=?", (uid,))}
+                expected = {r["skill"]: r["required_level"] for r in db.execute(
+                    "SELECT skill,required_level FROM career_role_skills WHERE role=?", (user["goal"],))}
+                resources = [dict(r) for r in db.execute("SELECT * FROM learning_resources ORDER BY id")]
+                analysis = gap_report(user["goal"], skills, background, career_catalog(db), levels, expected, resources)
                 # Practicing a skill and already knowing it are different concepts.
                 # Track actual practice separately from the self-reported readiness score.
                 required = set(analysis["required_skills"])
@@ -239,14 +278,11 @@ class API(BaseHTTPRequestHandler):
                 analysis["recommendations"].sort(
                     key=lambda item: item["skill"] in practiced
                 )
-                custom = {row["skill"]: dict(row) for row in db.execute(
-                    "SELECT skill,title,url,description FROM learning_resources ORDER BY id")}
-                for item in analysis["recommendations"]:
-                    if item["skill"] in custom:
-                        choice = custom[item["skill"]]
-                        item.update(resource=choice["title"], url=choice["url"], type="admin-curated")
+                db.execute("INSERT INTO recommendation_snapshots(user_id,payload,updated_at) VALUES (?,?,?) "
+                           "ON CONFLICT(user_id) DO UPDATE SET payload=excluded.payload,updated_at=excluded.updated_at",
+                           (uid, json.dumps(analysis), int(time.time())))
                 return self.send_json(200, {"profile": dict(user), "skills": skills,
-                                            "portfolio": portfolio, "completed": completed, "analysis": analysis})
+                                            "portfolio": portfolio, "levels": levels, "completed": completed, "analysis": analysis})
             if route == "/api/portfolio":
                 items = [dict(row) for row in db.execute(
                     "SELECT id,kind,title,skill FROM portfolio WHERE user_id=? ORDER BY id", (uid,))]
@@ -262,7 +298,7 @@ class API(BaseHTTPRequestHandler):
                     return self.send_json(403, {"error": "Administrator access required"})
                 if route == "/api/admin/users":
                     students = [dict(row) for row in db.execute(
-                        "SELECT id,name,email,role FROM users ORDER BY id LIMIT 200")]
+                        "SELECT id,name,email,role,department,academic_year FROM users ORDER BY id")]
                     return self.send_json(200, {"users": students})
                 logs = [dict(row) for row in db.execute(
                     "SELECT id,actor_id,action,target,created_at FROM audit_log ORDER BY id DESC LIMIT 100")]
@@ -276,10 +312,12 @@ class API(BaseHTTPRequestHandler):
             return self.send_json(400, {"error": "A JSON object under 16 KB is required"})
         with connect_db(self.db_path) as db:
             if route == "/api/register":
-                name = str(data.get("name", "")).strip()
-                email = str(data.get("email", "")).strip().lower()
+                name = data.get("name", "")
+                name = name.strip() if isinstance(name, str) else ""
+                email = data.get("email", "")
+                email = email.strip().lower() if isinstance(email, str) else ""
                 password = data.get("password", "")
-                if not (1 <= len(name) <= 80 and re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email) and isinstance(password, str) and 8 <= len(password) <= 128):
+                if not (1 <= len(name) <= 80 and len(email) <= 254 and re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email) and isinstance(password, str) and 8 <= len(password) <= 128):
                     return self.send_json(400, {"error": "Enter a name, valid email and password of at least 8 characters"})
                 salt = secrets.token_hex(16)
                 try:
@@ -289,10 +327,11 @@ class API(BaseHTTPRequestHandler):
                     return self.send_json(409, {"error": "Email already registered"})
                 return self.send_json(201, {"message": "Account created. Sign in to continue."})
             if route == "/api/login":
-                email = str(data.get("email", "")).strip().lower()
+                email = data.get("email", "")
+                email = email.strip().lower() if isinstance(email, str) else ""
                 password = data.get("password", "")
                 row = db.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
-                if not isinstance(password, str) or not row or not secrets.compare_digest(row["password_hash"],password_digest(password,row["salt"])):
+                if not isinstance(password, str) or not 1 <= len(password) <= 128 or not row or not secrets.compare_digest(row["password_hash"],password_digest(password,row["salt"])):
                     return self.send_json(401, {"error": "Incorrect email or password"})
                 token = secrets.token_hex(32)
                 db.execute("INSERT INTO sessions (token_hash,user_id,expires_at) VALUES (?,?,?)", (hashlib.sha256(token.encode()).hexdigest(),row["id"],int(time.time()) + 8*3600))
@@ -317,7 +356,7 @@ class API(BaseHTTPRequestHandler):
                 kind,title,skill = data.get("kind"),data.get("title"),data.get("skill")
                 if (kind not in ("course","project","certification")
                         or not isinstance(title,str) or not 1 <= len(title.strip()) <= 120
-                        or skill not in ALL_SKILLS):
+                        or skill not in skill_names(db)):
                     return self.send_json(400, {"error": "Invalid portfolio item"})
                 db.execute("INSERT INTO portfolio (user_id,kind,title,skill) VALUES (?,?,?,?)",
                            (uid,kind,title.strip(),skill))
@@ -326,62 +365,46 @@ class API(BaseHTTPRequestHandler):
                 if type(item_id) is not int or item_id <= 0:
                     return self.send_json(400, {"error": "Invalid item id"})
                 db.execute("DELETE FROM portfolio WHERE user_id=? AND id=?", (uid,item_id))
-            elif route == "/api/admin/roles":
+            elif route.startswith("/api/admin/"):
                 role_info = db.execute("SELECT role FROM users WHERE id=?", (uid,)).fetchone()
                 if role_info["role"] != "admin":
                     return self.send_json(403, {"error": "Administrator access required"})
-                role, skills = data.get("role"),data.get("skills")
-                if (not isinstance(role,str) or not 1<=len(role.strip())<=80
-                        or not isinstance(skills,list) or not skills or len(skills)>len(ALL_SKILLS)
-                        or any(not isinstance(skill,str) or skill not in ALL_SKILLS for skill in skills)):
-                    return self.send_json(400, {"error": "Invalid role requirements"})
-                role = role.strip()
-                db.execute("INSERT OR IGNORE INTO career_roles (name) VALUES (?)", (role,))
-                db.execute("DELETE FROM career_role_skills WHERE role=?", (role,))
-                db.executemany("INSERT OR IGNORE INTO career_role_skills (role,skill) VALUES (?,?)",
-                               [(role,skill) for skill in skills])
-                db.execute("INSERT INTO audit_log (actor_id,action,target,created_at) VALUES (?,?,?,?)",
-                           (uid,"edit-role-requirements",role,int(time.time())))
-            elif route == "/api/admin/resources":
-                role = db.execute("SELECT role FROM users WHERE id=?", (uid,)).fetchone()
-                if role["role"] != "admin":
-                    return self.send_json(403, {"error": "Administrator access required"})
-                skill, title, url = data.get("skill"), data.get("title"), data.get("url")
-                description = data.get("description", "")
-                if (skill not in ALL_SKILLS or not isinstance(title,str) or not 1<=len(title.strip())<=100
-                        or not isinstance(url,str) or len(url)>500 or not isinstance(description,str)
-                        or len(description)>500):
-                    return self.send_json(400, {"error": "Invalid resource data"})
                 try:
-                    address = urlsplit(url)
-                    safe_host = address.hostname
-                except ValueError:
-                    return self.send_json(400, {"error": "A valid HTTPS resource URL is required"})
-                if (address.scheme != "https" or not safe_host or address.username or
-                        address.password or safe_host.lower() in ("localhost", "127.0.0.1", "::1") or
-                        any(c.isspace() for c in url)):
-                    return self.send_json(400, {"error": "A valid public HTTPS resource URL is required"})
-                db.execute("INSERT INTO learning_resources (skill,title,url,description) VALUES (?,?,?,?)",
-                           (skill,title.strip(),url,description))
-                db.execute("INSERT INTO audit_log (actor_id,action,target,created_at) VALUES (?,?,?,?)",
-                           (uid,"add-resource",skill,int(time.time())))
+                    status, result = administer(db, uid, route, data)
+                except ValidationError as error:
+                    return self.send_json(400, {"error": str(error)})
+                db.commit()
+                return self.send_json(status, result)
             elif route == "/api/profile":
-                name = str(data.get("name", "")).strip()
-                interests = str(data.get("interests", "")).strip()
+                name = data.get("name", "")
+                name = name.strip() if isinstance(name, str) else ""
+                interests = data.get("interests", "")
+                if not isinstance(interests, str):
+                    return self.send_json(400, {"error": "Interests must be text"})
+                interests = interests.strip()
                 goal = str(data.get("goal", ""))
                 if not 1 <= len(name) <= 80 or len(interests) > 300 or goal not in career_catalog(db):
                     return self.send_json(400, {"error": "Enter a name and valid career goal"})
-                db.execute("UPDATE users SET name=?,interests=?,goal=? WHERE id=?", (name,interests,goal,uid))
+                academic = [data.get(k, "") for k in ("department", "academic_year", "phone")]
+                if any(not isinstance(v, str) or len(v) > limit for v, limit in zip(academic, (100, 30, 30))):
+                    return self.send_json(400, {"error": "Invalid academic or contact information"})
+                db.execute("UPDATE users SET name=?,interests=?,goal=?,department=?,academic_year=?,phone=? WHERE id=?",
+                           (name, interests, goal, *academic, uid))
             elif route == "/api/skills":
                 skills = data.get("skills")
-                if not isinstance(skills, list) or len(skills) > len(ALL_SKILLS) or any(not isinstance(skill,str) or skill not in ALL_SKILLS for skill in skills):
+                if not isinstance(skills, list) or len(skills) > len(skill_names(db)) or any(not isinstance(skill,str) or skill not in skill_names(db) for skill in skills):
                     return self.send_json(400, {"error": "Select only skills in the catalog"})
+                levels = data.get("levels", {})
+                if (not isinstance(levels, dict) or any(s not in skills or type(v) is not int or not 1 <= v <= 3
+                                                       for s, v in levels.items())):
+                    return self.send_json(400, {"error": "Skill proficiency must be 1 (beginner), 2 (intermediate), or 3 (advanced)"})
                 db.execute("DELETE FROM skills WHERE user_id=?", (uid,))
-                db.executemany("INSERT OR IGNORE INTO skills (user_id,skill) VALUES (?,?)", [(uid,s) for s in skills])
+                db.executemany("INSERT OR IGNORE INTO skills (user_id,skill,level) VALUES (?,?,?)",
+                               [(uid,s,levels.get(s,2)) for s in skills])
             elif route == "/api/progress":
                 skill = data.get("skill")
                 completed = data.get("completed")
-                if skill not in ALL_SKILLS or not isinstance(completed,bool):
+                if skill not in skill_names(db) or not isinstance(completed,bool):
                     return self.send_json(400, {"error": "Invalid skill or completed value"})
                 if completed:
                     existed = db.execute("SELECT 1 FROM progress WHERE user_id=? AND skill=?", (uid,skill)).fetchone()

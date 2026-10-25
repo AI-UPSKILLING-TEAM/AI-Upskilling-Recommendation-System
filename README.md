@@ -1,102 +1,64 @@
-# AI-Powered Upskilling Recommendation System
+# SkillPath - AI-Powered Upskilling Recommendation System
+Software Engineering Mini-Project | Project ID 22 | PES University
 
-## Project ID
-22
+A runnable student career-planning application with academic profiles, self-assessed skill levels, missing/weak gap analysis, personalized learning paths, original project suggestions, optional official credential references, private portfolios, persistent practice progress, notifications and protected administrator management.
 
-## Project Description
-The AI-Powered Upskilling Recommendation System is designed to analyze a student's skills, courses, projects, certifications, interests, and career goals. The system identifies skill gaps and provides personalized recommendations for courses, learning resources, projects, and certifications.
+## Run
+Requires Python 3.10 or newer. No third-party Python package is needed to run the product.
 
-## Objectives
-- Analyze student skills and career goals.
-- Identify skill gaps.
-- Provide personalized upskilling recommendations.
-- Recommend relevant learning resources and projects.
-- Track student progress.
-- Help students improve their skills based on their career goals.
-
-## Key Features
-- Student Registration and Login
-- Student Profile Management
-- Skill Management
-- Career Goal Selection
-- Skill Gap Analysis
-- AI-Based Recommendations
-- Learning Resource Recommendations
-- Progress Tracking
-- Student Dashboard
-- Notifications
-- Administrator Management
-
-## Documentation
-The Software Requirements Specification (SRS) document is available in this repository.
-
-## Team Members
-1. POOJITHA V - PES2UG24AM113
-2. MANASA C - PES2UG25AM803
-3. SHANMUGA - PES2UG24AM083
-4. MANISH S - PES2UG24AM085
-
-## Working prototype (Part-2 implementation)
-
-The current implementation is proposed on [PR #17](https://github.com/AI-UPSKILLING-TEAM/AI-Upskilling-Recommendation-System/pull/17), not yet merged into `main`.
-
-### Run the application
-Requires Python 3.10+ with no third-party runtime packages.
-
-```bash
-python app.py
-# Open http://127.0.0.1:8000
-```
-
-### Run automated checks
-```bash
-python -m unittest discover -s tests -v
-```
-
-### Student features
-Register, sign in, edit your name/interests/goal, choose known skills, inspect your skill gaps, view content-ranked learning links, add courses/projects/certifications to your learning portfolio, track practice milestones and opt in to in-app notifications.
-
-### Administrator features
-For local demonstration, a server operator first registers an admin account then runs:
-
-```bash
-python app.py promote-admin admin@example.com
-```
-
-Restart/reload the web app and sign in as that promoted account. Admins can view registered student account metadata, add HTTPS learning resources, edit career-role skill requirements, and inspect an audit history. The admin role cannot be granted through public HTTP endpoints.
-
-### Scope and academic evidence
-This is a local educational prototype, not a cloud service and not a trained neural recommendation model. The ranking uses TF-IDF and cosine similarity against a small catalog; it is not validated against real student learning outcomes. Do not enter real credentials or private student data.
-
-See:
-- [Actual SRS requirement traceability draft](docs/REQUIREMENTS_TRACEABILITY_DRAFT.md)
-- [Current Sprint-2 implementation status](docs/SPRINT2_STATUS.md)
-- [Test evidence](docs/TEST_EVIDENCE.md)
-- [Recommendations methodology and limitations](docs/RECOMMENDER_METHOD_AND_LIMITS.md)
-- [Demo recording guide](docs/DEMO_RECORDING_GUIDE.md)
-- [Release checklist](docs/RELEASE_AND_FREEZE_CHECKLIST.md)
-
-**Open acceptance work:** Team review of PR #17, confirmation against original SAD/Test Plan, GitHub Project board linking, and recording/uploading the authentic 1-minute and 2-minute demo videos.
-
-## Running the current prototype (Part-2 PR #17)
-
-The application is available on branch `feature/manish-part2-mvp` until a teammate reviews and merges the pull request.
-
-```bash
+```sh
 python app.py
 ```
 
-Open **http://127.0.0.1:8000** in a browser. Use dummy data and a disposable password for this local educational prototype. Python 3.10+ is required; no application packages need to be installed.
+Open http://127.0.0.1:8000 . Windows users can also run START_WINDOWS.cmd. Register a demonstration account and sign in. Data persists in upskill.db (excluded from Git). Set UPSKILL_DB, HOST or PORT to change configuration; keep loopback binding for local use.
 
-To verify the implementation:
+To enable a legitimate administrator, register that account and run locally:
 
-```bash
+```sh
+python app.py promote-admin your-account@example.com
+```
+
+Refresh or sign in again. There is no default admin password or remote promotion endpoint. See [User manual](docs/USER_MANUAL.md).
+
+## Verify
+```sh
 python -m unittest discover -s tests -v
 node --check app.js
+npm ci
+npx playwright install chromium
+npm run test:browser
+python scripts/evaluate_recommender.py
+python scripts/benchmark.py
+python scripts/audit_links.py
 ```
 
-Node.js is needed only for the optional JavaScript syntax check; GitHub Actions runs this and the Python tests automatically.
+Normal use needs only Python. Node/Playwright/axe-core are development tools. Optional PDF generation uses requirements-docs.txt. CI tests Linux/Windows, Python 3.11/3.12 and Chromium. Raw local results and screenshots are in evidence/.
 
-The prototype demonstrates registration, login, profile and career goals, skill-gap analysis, curated learning links, specific project ideas, limited certification suggestions, in-app practice tracking, and a role-protected admin panel. Recommendations use **TF-IDF content-based ranking**, not a trained or empirically evaluated AI model.
+## Documents and demonstration
+- [Architecture and design](docs/SAD.md)
+- [Test plan](docs/TEST_PLAN.md) and [actual results](docs/TEST_EVIDENCE.md)
+- [All 38 FR and 10 NFR mapped](docs/REQUIREMENTS_TRACEABILITY.md)
+- [Sprint plan](docs/SPRINT_PLAN.md) and [GitHub Project](https://github.com/orgs/AI-UPSKILLING-TEAM/projects/1)
+- [Recommender method and limits](docs/RECOMMENDER_METHOD_AND_LIMITS.md)
+- [Design decisions / process status](docs/DEVIATIONS_AND_PENDING.md)
+- [Demo guide](docs/DEMO_RECORDING_GUIDE.md) and [release/freeze checklist](docs/RELEASE_AND_FREEZE_CHECKLIST.md)
+- [One-minute Sprint 1 recovery demo](evidence/videos/Sprint_1_Demo.mp4)
+- [Two-minute Sprint 2 implementation preview](evidence/videos/Sprint_2_Preview.mp4)
+- Original source: [SRS](SRS_Project_ID_22.pdf)
 
-**For submission:** See [requirements traceability](docs/REQUIREMENTS_TRACEABILITY_DRAFT.md), [known deviations](docs/DEVIATIONS_AND_PENDING.md), [run and test instructions](docs/RUN_AND_TEST.md), and [real demo video guide](docs/DEMO_RECORDING_GUIDE.md). GitHub Project setup, peer PR review/merge, actual one-minute and two-minute demo recordings, final SAD/Test Plan checks and release freeze remain pending.
+The new SAD/Test Plan were created because the originals were unavailable. Current recordings are dated 25 October 2026; Sprint 1 was scheduled 19-23 October and Sprint 2 26-30 October. PR #17 remains subject to genuine independent review, owner merge and formal sprint acceptance/freeze. This branch and the submission package contain the candidate; main changes only after review/merge.
+
+## Recommendation method
+TF-IDF cosine similarity ranks curated reference resources for missing/weak skills using goal, interests and portfolio context. The SRS allows reference data. This is content-based ranking, not a trained predictor of student outcomes. Practice completion does not prove proficiency. The synthetic evaluation and its limitations are documented.
+
+## Team
+
+| Name | SRN | GitHub |
+|---|---|---|
+| Poojitha V | PES2UG24AM113 | poojithav77 |
+| Manasa C | PES2UG25AM803 | manasachandru12345 |
+| Shanmuga | PES2UG24AM083 | shanmugavel30072006-blip |
+| Manish S | PES2UG24AM085 | ManishS943 |
+
+## Backup and operational scope
+Use `python scripts/backup_db.py backup.db` for a verified online backup. Keep backups outside source publication. This is a local coursework server; internet deployment requires production hosting, HTTPS and a separate security/operations review.
