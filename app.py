@@ -120,7 +120,7 @@ def initialize(db_path=None):
 def career_catalog(db):
     role_names = [row["name"] for row in db.execute("SELECT name FROM career_roles ORDER BY name")]
     return {role: [row["skill"] for row in db.execute(
-                "SELECT skill FROM career_role_skills WHERE role=? ORDER BY skill", (role,))]
+                "SELECT skill FROM career_role_skills WHERE role=? ORDER BY rowid", (role,))]
             for role in role_names}
 
 
