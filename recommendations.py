@@ -27,6 +27,44 @@ CATALOG = {
 }
 
 
+PROJECT_IDEAS = {
+    "Python": "Create a CSV data cleaning and summary command-line tool.",
+    "SQL": "Design a student-course database and write analytical JOIN queries.",
+    "Excel": "Build a budget workbook with charts and validated formulas.",
+    "Statistics": "Analyze survey data and explain sample variability.",
+    "Data Visualization": "Create a dashboard of trends from a public dataset.",
+    "Machine Learning": "Train and evaluate a small supervised classification baseline.",
+    "HTML": "Build an accessible portfolio page with semantic HTML.",
+    "CSS": "Implement a responsive landing page with mobile layouts.",
+    "JavaScript": "Build an interactive study task tracker in the browser.",
+    "Git": "Contribute changes through branches, reviews and pull requests.",
+    "APIs": "Build a small HTTP API and client to manage tasks.",
+    "Testing": "Add automated unit and integration tests to an API.",
+    "Linux": "Write a Bash script that automates file backups.",
+    "Networking": "Document a small LAN topology and test DNS/HTTP.",
+    "Cloud Fundamentals": "Create an architecture diagram for a cloud-hosted app.",
+    "Security Fundamentals": "Threat-model a sample web app and document mitigations.",
+}
+
+# Provider pages verified 25 October 2026. Eligibility, prices and versions can change.
+CERTIFICATION_OPTIONS = {
+    "Data Analyst": {"title": "Microsoft Certified: Power BI Data Analyst Associate",
+                     "url": "https://learn.microsoft.com/en-us/credentials/certifications/data-analyst-associate/",
+                     "note": "Intermediate; check eligibility and exam requirements."},
+    "Cloud Engineer": {"title": "AWS Certified Cloud Practitioner",
+                       "url": "https://aws.amazon.com/certification/certified-cloud-practitioner/",
+                       "note": "Foundational; check current exam details."},
+    "Cybersecurity Analyst": {"title": "ISC2 Certified in Cybersecurity (CC)",
+                              "url": "https://www.isc2.org/Certifications",
+                              "note": "Entry-level; check current exam and registration details."},
+}
+
+
+def certificates_for(goal):
+    option = CERTIFICATION_OPTIONS.get(goal)
+    return [dict(option)] if option else []
+
+
 def words(value):
     return re.findall(r"[a-z0-9]+", value.lower())
 
@@ -52,7 +90,8 @@ def rank_learning(missing, goal, interests=""):
         similarity = sum(value * doc.get(word, 0) for word, value in query.items()) / (norm_q * norm_d)
         result.append({
             "skill": skill, "resource": title, "url": url, "type": kind,
-            "activity": "Build a small project demonstrating " + skill,
+            "activity": PROJECT_IDEAS.get(skill, "Design a practical project using " + skill),
+            "project": PROJECT_IDEAS.get(skill, "Design a practical project using " + skill),
             "relevance_score": round(similarity, 4),
             "_order": i,
         })
