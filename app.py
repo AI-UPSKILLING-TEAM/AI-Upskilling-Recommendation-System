@@ -351,8 +351,14 @@ class API(BaseHTTPRequestHandler):
                         or not isinstance(url,str) or len(url)>500 or not isinstance(description,str)
                         or len(description)>500):
                     return self.send_json(400, {"error": "Invalid resource data"})
-                address = urlsplit(url)
-                if address.scheme != "https" or not address.hostname or address.username or address.password:
+                try:
+                    address = urlsplit(url)
+                    safe_host = address.hostname
+                except ValueError:
+                    return self.send_json(400, {"error": "A valid HTTPS resource URL is required"})
+                if (address.scheme != "https" or not safe_host or address.username or
+                        address.password or safe_host.lower() in ("localhost", "127.0.0.1", "::1") or
+                        any(c.isspace() for c in url)):
                     return self.send_json(400, {"error": "A valid public HTTPS resource URL is required"})
                 db.execute("INSERT INTO learning_resources (skill,title,url,description) VALUES (?,?,?,?)",
                            (skill,title.strip(),url,description))
