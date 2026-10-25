@@ -103,6 +103,42 @@ class SprintTwoTests(unittest.TestCase):
         python_row = next(r for r in data["analysis"]["recommendations"] if r["skill"] == "Python")
         self.assertEqual(python_row["resource"],"Python exercise")
 
+    def test_courses_projects_and_certifications_are_private(self):
+        first = self.student()
+        items = [
+            ("course","Python Fundamentals","Python"),
+            ("project","SQL mini project","SQL"),
+            ("certification","Excel Essentials","Excel"),
+        ]
+        for kind,title,skill in items:
+            self.assertEqual(self.call("/api/portfolio/add",
+                {"kind":kind,"title":title,"skill":skill})[0],200)
+        ids = [r["id"] for r in self.call("/api/portfolio")[1]["items"]]
+        self.assertEqual(len(ids),3)
+        self.assertEqual(len(self.call("/api/dashboard")[1]["portfolio"]),3)
+        self.assertEqual(self.call("/api/portfolio/add",
+            {"kind":"invalid","title":"bad","skill":"Python"})[0],400)
+        self.student("other@example.com")
+        self.assertEqual(self.call("/api/portfolio")[1]["items"],[])
+        self.assertEqual(self.call("/api/portfolio/delete",{"id":ids[0]})[0],200)
+        self.token=first
+        self.assertEqual(len(self.call("/api/portfolio")[1]["items"]),3)
+        self.assertEqual(self.call("/api/portfolio/delete",{"id":ids[0]})[0],200)
+        self.assertEqual(len(self.call("/api/portfolio")[1]["items"]),2)
+
+    def test_admin_can_edit_career_requirements(self):
+        self.student()
+        new_role = {"role":"Data Analyst","skills":["Python","SQL"]}
+        self.assertEqual(self.call("/api/admin/roles",new_role)[0],403)
+        self.assertTrue(promote_admin("student@example.com",self.db))
+        self.assertEqual(self.call("/api/admin/roles",{"role":"", "skills":["SQL"]})[0],400)
+        self.assertEqual(self.call("/api/admin/roles",new_role)[0],200)
+        self.assertEqual(self.call("/api/catalog")[1]["career_paths"]["Data Analyst"],["Python","SQL"])
+        self.assertEqual(self.call("/api/profile",
+            {"name":"Student","interests":"","goal":"Data Analyst"})[0],200)
+        self.assertEqual(self.call("/api/dashboard")[1]["analysis"]["required_skills"],["Python","SQL"])
+        self.assertEqual(self.call("/api/admin/audit")[1]["audit"][0]["action"],"edit-role-requirements")
+
     def test_unauthorized_write_and_validation(self):
         self.student()
         self.assertEqual(self.call("/api/notifications",token=None)[0],401)
