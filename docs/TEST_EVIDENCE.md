@@ -19,3 +19,9 @@ The benchmark uses a small local catalog and disposable account; it is not produ
 
 ## Release preparation verification (26 October)
 Seven offline release-gate simulations pass (evidence/release-gate-tests.json). These are simulations, not an actual release. The new final Sprint 2 recording is 120.00 seconds and passes full decode verification; its actual capture timestamp is in videos/Sprint_2_Demo.metadata.json. Application code is unchanged from the previously passing baseline.
+
+## Fresh verification - 15 November 2026
+
+A clean clone of candidate `1064d8a161367ec3ebb3835e52e8c5cdd20c0aa7` passed all 28 Python tests, JavaScript syntax, real Chrome student/admin workflows, 390px mobile overflow check and automated accessibility (zero violations). SQLite backup integrity and all 13 table contents matched. All 48 SRS requirement identifiers are mapped in the RTM. Local request maxima were 28.79ms serial and 168.69ms with five workers. Seven offline release-gate cases passed. The 12 synthetic ranking cases reproduced the earlier metrics and retain their non-independent-data limitation.
+
+Raw results and screenshots: `evidence/final-verification-2026-11-15/`. Fresh automated outbound audit reached 17/19 links; Khan Academy timed out and Cloudflare returned 403. Separate web fetch retrieved Cloudflare content; Khan Academy returned no readable content. These outcomes do not establish dead links. Human usability, teammate acceptance and college receipt verification remain separate. See VERIFICATION_AND_HANDOVER.md for the submission statement, review status and limits.

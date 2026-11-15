@@ -1,0 +1,216 @@
+test_auth_duplicate_and_invalid_login (test_app.ProjectTests.test_auth_duplicate_and_invalid_login) ... 127.0.0.1 - - [15/Nov/2026 15:37:34] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:34] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:34] "POST /api/register HTTP/1.1" 409 -
+127.0.0.1 - - [15/Nov/2026 15:37:34] "POST /api/login HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:34] "GET /api/dashboard HTTP/1.1" 401 -
+ok
+test_gap_report (test_app.ProjectTests.test_gap_report) ... ok
+test_public_endpoints (test_app.ProjectTests.test_public_endpoints) ... 127.0.0.1 - - [15/Nov/2026 15:37:35] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:35] "GET /api/catalog HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:35] "GET /api/dashboard HTTP/1.1" 401 -
+ok
+test_skills_goal_recommendations_and_progress (test_app.ProjectTests.test_skills_goal_recommendations_and_progress) ... 127.0.0.1 - - [15/Nov/2026 15:37:36] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:37] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:37] "POST /api/profile HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:37] "POST /api/skills HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:37] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:37] "POST /api/progress HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:37] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:37] "POST /api/logout HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:37] "GET /api/dashboard HTTP/1.1" 401 -
+ok
+test_validation (test_app.ProjectTests.test_validation) ... 127.0.0.1 - - [15/Nov/2026 15:37:38] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:38] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:38] "POST /api/profile HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:38] "POST /api/skills HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:38] "POST /api/progress HTTP/1.1" 400 -
+ok
+test_academic_profile_and_weak_skill_gap (test_completion.CompletionTests.test_academic_profile_and_weak_skill_gap) ... 127.0.0.1 - - [15/Nov/2026 15:37:39] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:39] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:39] "POST /api/profile HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:39] "POST /api/skills HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:39] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:39] "POST /api/skills HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:39] "POST /api/skills HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:39] "POST /api/profile HTTP/1.1" 400 -
+ok
+test_admin_catalog_resource_and_role_lifecycle (test_completion.CompletionTests.test_admin_catalog_resource_and_role_lifecycle) ... 127.0.0.1 - - [15/Nov/2026 15:37:40] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:40] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:40] "POST /api/admin/skills HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:40] "GET /api/catalog HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:40] "POST /api/admin/roles HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "GET /api/catalog HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "POST /api/admin/resources HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "GET /api/resources HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "POST /api/admin/resources HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "POST /api/profile HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "POST /api/admin/roles-delete HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "POST /api/profile HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "POST /api/admin/roles-delete HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "POST /api/admin/skills-delete HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "POST /api/admin/resources-delete HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "POST /api/admin/skills-delete HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "GET /api/catalog HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:41] "GET /api/admin/audit HTTP/1.1" 200 -
+ok
+test_admin_rejects_invalid_public_urls (test_completion.CompletionTests.test_admin_rejects_invalid_public_urls) ... 127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:42] "POST /api/admin/resources HTTP/1.1" 400 -
+ok
+test_admin_student_edit_and_cascading_account_delete (test_completion.CompletionTests.test_admin_student_edit_and_cascading_account_delete) ... 127.0.0.1 - - [15/Nov/2026 15:37:43] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:43] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "POST /api/portfolio/add HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "POST /api/progress HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "GET /api/admin/users HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "POST /api/admin/users HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "POST /api/admin/users-delete HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "GET /api/dashboard HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:44] "POST /api/admin/users-delete HTTP/1.1" 400 -
+ok
+test_every_admin_mutation_rejects_students_and_anonymous (test_completion.CompletionTests.test_every_admin_mutation_rejects_students_and_anonymous) ... 127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/skills HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/skills HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/skills-delete HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/skills-delete HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/users HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/users HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/users-delete HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/users-delete HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/roles HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/roles HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/roles-delete HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/roles-delete HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/resources HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/resources HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/resources-delete HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:45] "POST /api/admin/resources-delete HTTP/1.1" 401 -
+ok
+test_malformed_input_does_not_crash_server (test_completion.CompletionTests.test_malformed_input_does_not_crash_server) ... 127.0.0.1 - - [15/Nov/2026 15:37:46] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:47] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:47] "POST /api/skills HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:47] "POST /api/skills HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:47] "POST /api/skills HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:47] "POST /api/register HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:47] "POST /api/login HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:37:47] "POST /api/profile HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:47] "GET /health HTTP/1.1" 200 -
+ok
+test_persistence_reinitialize_and_progress_for_matching_skills (test_completion.CompletionTests.test_persistence_reinitialize_and_progress_for_matching_skills) ... 127.0.0.1 - - [15/Nov/2026 15:37:47] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:48] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:48] "POST /api/profile HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:48] "POST /api/skills HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:48] "POST /api/progress HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:48] "GET /api/dashboard HTTP/1.1" 200 -
+ok
+test_all_dom_id_references_exist (test_frontend_contract.FrontendContractTests.test_all_dom_id_references_exist) ... ok
+test_external_recommendations_are_safe_link_targets (test_frontend_contract.FrontendContractTests.test_external_recommendations_are_safe_link_targets) ... ok
+test_no_duplicate_ids_or_invalid_label_targets (test_frontend_contract.FrontendContractTests.test_no_duplicate_ids_or_invalid_label_targets) ... ok
+test_source_js_is_loaded (test_frontend_contract.FrontendContractTests.test_source_js_is_loaded) ... ok
+test_client_cache_headers_and_static_content_security (test_nfr.NonFunctionalTests.test_client_cache_headers_and_static_content_security) ... 127.0.0.1 - - [15/Nov/2026 15:37:49] "GET /api/catalog HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:49] "GET / HTTP/1.1" 200 -
+ok
+test_expired_session_denied (test_nfr.NonFunctionalTests.test_expired_session_denied) ... 127.0.0.1 - - [15/Nov/2026 15:37:50] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:50] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:50] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:50] "GET /api/dashboard HTTP/1.1" 401 -
+ok
+test_password_is_salted_and_never_stored_in_plaintext (test_nfr.NonFunctionalTests.test_password_is_salted_and_never_stored_in_plaintext) ... 127.0.0.1 - - [15/Nov/2026 15:37:51] "POST /api/register HTTP/1.1" 201 -
+ok
+test_request_validation_rejects_unstructured_input (test_nfr.NonFunctionalTests.test_request_validation_rejects_unstructured_input) ... 127.0.0.1 - - [15/Nov/2026 15:37:52] "POST /api/register HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:52] "POST /api/register HTTP/1.1" 400 -
+ok
+test_admin_access_and_audit (test_sprint2.SprintTwoTests.test_admin_access_and_audit) ... 127.0.0.1 - - [15/Nov/2026 15:37:52] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "GET /api/admin/users HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "GET /api/admin/audit HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "POST /api/admin/resources HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "GET /api/admin/users HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "POST /api/admin/resources HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "POST /api/admin/resources HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "GET /api/admin/audit HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "GET /api/resources HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "POST /api/profile HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:53] "GET /api/dashboard HTTP/1.1" 200 -
+ok
+test_admin_can_edit_career_requirements (test_sprint2.SprintTwoTests.test_admin_can_edit_career_requirements) ... 127.0.0.1 - - [15/Nov/2026 15:37:54] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:54] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:54] "POST /api/admin/roles HTTP/1.1" 403 -
+127.0.0.1 - - [15/Nov/2026 15:37:54] "POST /api/admin/roles HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:54] "POST /api/admin/roles HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:54] "GET /api/catalog HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:54] "POST /api/profile HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:54] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:54] "GET /api/admin/audit HTTP/1.1" 200 -
+ok
+test_catalog_uses_only_https_resources (test_sprint2.SprintTwoTests.test_catalog_uses_only_https_resources) ... 127.0.0.1 - - [15/Nov/2026 15:37:55] "GET /api/resources HTTP/1.1" 200 -
+ok
+test_courses_projects_and_certifications_are_private (test_sprint2.SprintTwoTests.test_courses_projects_and_certifications_are_private) ... 127.0.0.1 - - [15/Nov/2026 15:37:56] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:56] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:56] "POST /api/portfolio/add HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:56] "POST /api/portfolio/add HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:56] "POST /api/portfolio/add HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:56] "GET /api/portfolio HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:56] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:56] "POST /api/portfolio/add HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:56] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:57] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:57] "GET /api/portfolio HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:57] "POST /api/portfolio/delete HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:57] "GET /api/portfolio HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:57] "POST /api/portfolio/delete HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:57] "GET /api/portfolio HTTP/1.1" 200 -
+ok
+test_notification_opt_in_and_isolation (test_sprint2.SprintTwoTests.test_notification_opt_in_and_isolation) ... 127.0.0.1 - - [15/Nov/2026 15:37:58] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "GET /api/notifications HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "POST /api/notifications/preferences HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "POST /api/notifications/preferences HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "POST /api/progress HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "POST /api/progress HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "GET /api/notifications HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "POST /api/notifications/read HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "GET /api/notifications HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:58] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:37:59] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:59] "GET /api/notifications HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:59] "POST /api/notifications/read HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:59] "GET /api/notifications HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:59] "POST /api/notifications/preferences HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:59] "POST /api/progress HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:37:59] "GET /api/notifications HTTP/1.1" 200 -
+ok
+test_personalized_recommendation_has_real_resource_metadata (test_sprint2.SprintTwoTests.test_personalized_recommendation_has_real_resource_metadata) ... ok
+test_project_and_optional_certification_recommendations (test_sprint2.SprintTwoTests.test_project_and_optional_certification_recommendations) ... 127.0.0.1 - - [15/Nov/2026 15:38:01] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:38:01] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:38:01] "POST /api/profile HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:38:01] "GET /api/dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:38:01] "POST /api/profile HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:38:01] "GET /api/dashboard HTTP/1.1" 200 -
+ok
+test_unauthorized_write_and_validation (test_sprint2.SprintTwoTests.test_unauthorized_write_and_validation) ... 127.0.0.1 - - [15/Nov/2026 15:38:02] "POST /api/register HTTP/1.1" 201 -
+127.0.0.1 - - [15/Nov/2026 15:38:02] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [15/Nov/2026 15:38:02] "GET /api/notifications HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:38:02] "POST /api/notifications/preferences HTTP/1.1" 401 -
+127.0.0.1 - - [15/Nov/2026 15:38:02] "POST /api/notifications/read HTTP/1.1" 400 -
+127.0.0.1 - - [15/Nov/2026 15:38:02] "POST /api/notifications/read HTTP/1.1" 400 -
+ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 29.451s
+
+OK

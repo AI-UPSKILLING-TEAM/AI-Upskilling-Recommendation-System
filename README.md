@@ -37,6 +37,7 @@ Normal use needs only Python. Node/Playwright/axe-core are development tools. Op
 ## Documents and demonstration
 - [Architecture and design](docs/SAD.md)
 - [Test plan](docs/TEST_PLAN.md) and [actual results](docs/TEST_EVIDENCE.md)
+- [Maintenance plan](docs/MAINTENANCE_PLAN.md) and [15 November verification/handover](docs/VERIFICATION_AND_HANDOVER.md)
 - [All 38 FR and 10 NFR mapped](docs/REQUIREMENTS_TRACEABILITY.md)
 - [Sprint plan](docs/SPRINT_PLAN.md) and [GitHub Project](https://github.com/orgs/AI-UPSKILLING-TEAM/projects/1)
 - [Recommender method and limits](docs/RECOMMENDER_METHOD_AND_LIMITS.md)
