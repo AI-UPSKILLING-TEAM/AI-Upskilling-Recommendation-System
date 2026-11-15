@@ -1,0 +1,14 @@
+{
+  "tested_commit": "1064d8a161367ec3ebb3835e52e8c5cdd20c0aa7",
+  "backup": {
+    "integrity": "ok",
+    "all_tables_equal": true,
+    "table_count": 13
+  },
+  "traceability": {
+    "srs_requirement_count": 48,
+    "rtm_rows": 48,
+    "missing": []
+  },
+  "limits": "Automated verification is not human approval or academic submission evidence."
+}

@@ -1,0 +1,53 @@
+name: Project verification
+on:
+  push:
+    branches: [main, feature/manish-part2-mvp]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  api-tests:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Compile and run API/security regressions
+        run: |
+          python -m compileall -q app.py administration.py recommendations.py scripts
+          python -m unittest discover -s tests -v
+          node --check app.js
+          node scripts/test_release_gate.cjs
+          python scripts/evaluate_recommender.py
+  browser-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Browser and accessibility acceptance tests
+        run: npm run test:browser
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: browser-test-evidence
+          path: |
+            evidence/*.png
+            evidence/browser-results.json
+            evidence/accessibility.json

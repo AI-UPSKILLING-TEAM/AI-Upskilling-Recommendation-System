@@ -1,0 +1,20 @@
+[
+  {
+    "file": "Sprint_1_Demo.mp4",
+    "duration": "00:01:00.00",
+    "bytes": 1072443,
+    "decode_check": "passed",
+    "source": "Real automated browser capture of the running local product",
+    "date": "2026-10-25",
+    "status": "Sprint 1 recovery evidence"
+  },
+  {
+    "file": "Sprint_2_Preview.mp4",
+    "duration": "00:02:00.00",
+    "bytes": 1781613,
+    "decode_check": "passed",
+    "source": "Real automated browser capture of the running local product",
+    "date": "2026-10-25",
+    "status": "Sprint 2 preview before the scheduled sprint"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "name": "skillpath-project-22",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test:browser": "node scripts/browser_test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "axe-core": "4.11.1"
+  }
+}

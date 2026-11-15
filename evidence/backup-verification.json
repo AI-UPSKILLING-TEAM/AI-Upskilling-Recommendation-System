@@ -1,0 +1,21 @@
+{
+  "integrity_check": "ok",
+  "all_table_data_equal": true,
+  "tables_checked": {
+    "audit_log": 4,
+    "career_role_skills": 32,
+    "career_roles": 7,
+    "learning_resources": 1,
+    "notification_preferences": 1,
+    "notifications": 1,
+    "portfolio": 1,
+    "progress": 1,
+    "recommendation_snapshots": 1,
+    "sessions": 1,
+    "skill_catalog": 17,
+    "skills": 2,
+    "users": 1
+  },
+  "source": "Disposable browser acceptance database",
+  "restore_check": "Backup opened independently and all table contents compared"
+}

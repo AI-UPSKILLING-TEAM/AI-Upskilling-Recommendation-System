@@ -1,0 +1,34 @@
+{
+  "simulation_only": true,
+  "real_release_not_executed": true,
+  "tests": [
+    {
+      "name": "missing independent approval blocks publication",
+      "passed": true
+    },
+    {
+      "name": "author cannot self-approve",
+      "passed": true
+    },
+    {
+      "name": "approval of an older revision is rejected",
+      "passed": true
+    },
+    {
+      "name": "foreign repository is rejected",
+      "passed": true
+    },
+    {
+      "name": "unrelated main commit cannot release",
+      "passed": true
+    },
+    {
+      "name": "existing release tag cannot be moved",
+      "passed": true
+    },
+    {
+      "name": "valid reviewed merge verifies assets before release and issue closure",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "results": [
+    "axe-core WCAG 2.1 A/AA automated scan: zero violations",
+    "Student registration, login, academics, weak skills, projects, progress and reload passed",
+    "390px mobile viewport: no horizontal overflow",
+    "Admin skill creation, career role/target levels, course creation and editing passed",
+    "No uncaught browser JavaScript exceptions"
+  ],
+  "viewport": [
+    1365,
+    900
+  ],
+  "mobile": [
+    390,
+    844
+  ],
+  "recorded_at": "2026-10-25T17:50:19.563Z"
+}

@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.db
+*.db-*
+.env
+.pytest_cache/
+.venv/
+.DS_Store
+
+node_modules/
+evidence/*server.log
+evidence/videos/*-raw.webm
+evidence/videos/*.webm

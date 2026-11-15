@@ -1,0 +1,18 @@
+{
+  "scenario": "Localhost, one disposable student, seeded small catalog; 30 serial and 30 requests with 5 workers",
+  "proposed_target_ms": 2000,
+  "serial": {
+    "requests": 30,
+    "median_ms": 15.49,
+    "p95_ms": 28.5,
+    "max_ms": 28.79
+  },
+  "concurrent_5": {
+    "requests": 30,
+    "median_ms": 42.98,
+    "p95_ms": 140.27,
+    "max_ms": 168.69
+  },
+  "target_met": true,
+  "limits": "Local smoke benchmark, not production capacity certification"
+}
